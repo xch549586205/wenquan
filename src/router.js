@@ -2,7 +2,7 @@ import { lazy } from "react";
 
 const routers = [
   {
-    path: "/main",
+    path: "/",
     Component: lazy(() => import("./pages/Main")),
   },
 ];
