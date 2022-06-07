@@ -35,7 +35,6 @@ export default () => {
       draggleRef.current.state.y = 0;
     }, 200);
   };
-
   return (
     <div>
       {groupingQuestionTypes.map(({ groupName, groupTags }, i) => {
@@ -49,9 +48,11 @@ export default () => {
                   <Draggable
                     ref={draggleRef}
                     key={"tag" + i + j}
-                    onStop={(_event, uiData) =>
-                      onStop(_event, uiData, draggleRef)
-                    }
+                    onStart={() => setMouseIndex([i, j])}
+                    onStop={(_event, uiData) => {
+                      setMouseIndex([-1, -1]);
+                      onStop(_event, uiData, draggleRef);
+                    }}
                   >
                     <Tag
                       icon={icon}

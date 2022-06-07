@@ -1,39 +1,38 @@
-import React from "react";
-import Tags from "./Tags";
-import { Row, Tabs, Col } from "antd";
+import { useState } from "react";
 import style from "./index.less";
 import QuestionContent from "./QuestionContent";
+import QuestionType from "./QuestionType";
+import { Button, Layout } from "antd";
+import { AppstoreAddOutlined } from "@ant-design/icons";
 import propTypes from "prop-types";
 
-const { TabPane } = Tabs;
-
+const { Header, Content, Footer, Sider } = Layout;
 function Panel(props) {
   const { direction = "row" } = props;
-
+  const isPhone = /Mobi|Android|iPhone/i.test(navigator.userAgent);
   return (
     <div className={direction === "row" ? style.panelRow : style.panelCol}>
-      <div
-        className={direction === "row" ? style.content1Left : style.content1Top}
-      >
-        <Tabs defaultActiveKey="1">
-          <TabPane tab="题型" key="1">
-            <Tags />
-          </TabPane>
-          <TabPane tab="题库" key="2">
-            Content of Tab Pane 2
-          </TabPane>
-          <TabPane tab="大纲" key="3">
-            Content of Tab Pane 3
-          </TabPane>
-        </Tabs>
-      </div>
-      <div
-        className={
-          direction === "row" ? style.content2Right : style.content2Bottom
-        }
-      >
-        <QuestionContent />
-      </div>
+      {/* <Button type="primary" className={style.Affix}>
+        <AppstoreAddOutlined />
+      </Button> */}
+      {isPhone && direction === "row" && (
+        <Sider
+          breakpoint="lg"
+          collapsedWidth="0"
+          onBreakpoint={(broken) => {
+            console.log(broken);
+          }}
+          onCollapse={(collapsed, type) => {
+            console.log(collapsed, type);
+          }}
+        >
+          <QuestionType direction={direction} />
+        </Sider>
+      )}
+      {(!isPhone || direction !== "row") && (
+        <QuestionType direction={direction} isPhone={isPhone} />
+      )}
+      <QuestionContent direction={direction} />
     </div>
   );
 }
