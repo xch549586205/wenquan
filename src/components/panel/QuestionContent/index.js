@@ -1,13 +1,20 @@
-import { useState } from "react";
+import { useState, createRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import style from "./index.less";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { updateCurrentData } from "@/reducer/questions/question";
+import propTypes from "prop-types";
+import { questionTypes } from "@/mock";
+
 function Content(props) {
-  const { direction } = props;
+  const [newItemIndex, setNewItemIndex] = useState(-1);
+
+  const { direction } = useSelector((state) => state.question.panelOptions);
   const currentData = useSelector((state) => state.question.currentData);
+  const mouseData = useSelector((state) => state.question.mouseData);
   const dispatch = useDispatch();
   const { questionList } = currentData;
+
   const onDragEnd = (result) => {
     if (!result.destination) {
       return;
@@ -30,7 +37,88 @@ function Content(props) {
       })
     );
   };
-  console.log(questionList, "questionList");
+
+  useEffect(() => {
+    const { clientX, clientY, type, questionId } = mouseData;
+    console.log(mouseData);
+    //纯点击
+    if (questionId && type === "click") {
+      addItem(questionId, questionList.length + 1);
+      return;
+    }
+
+    const questionNodeList = contentRef.current.childNodes[0].childNodes;
+    const range = [...questionNodeList].map((_node, index) => {
+      return {
+        pos: _node.offsetTop + _node.clientHeight / 2 - clientY,
+        index,
+      };
+    });
+    //通过鼠标位置 筛选鼠标在哪个item的范围内
+    const sortRange = range.sort((a, b) => Math.abs(a.pos) - Math.abs(b.pos));
+    const minRange = sortRange[0];
+    const _newItemIndex =
+      minRange.pos > 0 ? minRange.index : minRange.index + 1;
+
+    // 判断鼠标是否在列表box范围内
+    const { offsetTop, offsetLeft, clientWidth, clientHeight } =
+      contentRef.current;
+    const isMouseInBox =
+      clientX > offsetLeft &&
+      clientX < clientWidth + offsetLeft &&
+      clientY > offsetTop &&
+      clientY < clientHeight + offsetTop;
+
+    // 得到新item的index
+    if (clientX > 0 && clientY > 0 && isMouseInBox) {
+      setNewItemIndex(_newItemIndex);
+      if (type === "stop") {
+        addItem(questionId);
+      }
+    }
+  }, [mouseData]);
+
+  const isDrapInto = (index) => {
+    if (index === 0 && newItemIndex === 0) {
+      return style.intoQuestionFirst;
+    }
+    if (index + 1 === newItemIndex) {
+      return style.intoQuestion;
+    } else {
+      return style.question;
+    }
+  };
+
+  const addItem = (questionId, _newItemIndex = newItemIndex) => {
+    const newItem = createItem(questionId);
+    const _questionList = [...questionList];
+    const newList = [
+      ..._questionList.splice(0, _newItemIndex),
+      newItem,
+      ..._questionList,
+    ];
+    dispatch(
+      updateCurrentData({
+        ...currentData,
+        questionList: newList,
+      })
+    );
+    setNewItemIndex(-1);
+  };
+
+  const createItem = (questionId) => {
+    const questionType = questionTypes.filter(
+      (q) => q.questionId === questionId
+    )[0];
+    return {
+      name: questionType.name,
+      questionType: questionType.questionType,
+      questionId: questionType.questionId,
+      options: ["选项1", "选项2", "选项3"],
+      checked: [],
+    };
+  };
+  const contentRef = createRef(null);
 
   return (
     <div
@@ -38,38 +126,51 @@ function Content(props) {
         direction === "row" ? style.content2Right : style.content2Bottom
       }
     >
-      <DragDropContext onDragEnd={onDragEnd}>
-        {/* Your target */}
-        <Droppable droppableId="id">
-          {(provided) => (
-            <div ref={provided.innerRef} {...provided.droppableProps}>
-              {questionList.map((question, i) => {
-                return (
-                  <Draggable
-                    key={question.name}
-                    draggableId={question.name}
-                    index={i}
-                  >
-                    {(provided) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
+      <div className={style.title}> title...</div>
+
+      <div ref={contentRef}>
+        <DragDropContext onDragEnd={onDragEnd} key={questionList.length}>
+          {/* Your target */}
+          <Droppable droppableId="id">
+            {(provided) => {
+              return (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  {questionList.map((question, i) => {
+                    return (
+                      <Draggable
+                        key={question.questionType + i}
+                        draggableId={question.questionType + i}
+                        index={i}
+                        dataType={"list" + i}
                       >
-                        <div key={"question" + i} className={style.question}>
-                          {question.name}
-                        </div>
-                      </div>
-                    )}
-                  </Draggable>
-                );
-              })}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+                        {(_provided) => {
+                          return (
+                            <div
+                              ref={_provided.innerRef}
+                              {..._provided.draggableProps}
+                              {..._provided.dragHandleProps}
+                            >
+                              <div
+                                key={"question" + i}
+                                className={isDrapInto(i)}
+                              >
+                                {question.name}
+                              </div>
+                            </div>
+                          );
+                        }}
+                      </Draggable>
+                    );
+                  })}
+                  {provided.placeholder}
+                </div>
+              );
+            }}
+          </Droppable>
+        </DragDropContext>
+      </div>
     </div>
   );
 }
+
 export default Content;

@@ -22,7 +22,22 @@ const initialState = {
         options: ["选项4", "选项5", "选项5"],
         checked: [],
       },
+      {
+        questionType: "completion",
+        questionId: "004",
+        name: "填空题",
+        options: ["选项4", "选项5", "选项5"],
+        checked: [],
+      },
     ],
+  },
+  panelOptions: {
+    direction: "",
+    isSupportPhone: true,
+  },
+  mouseData: {
+    clientX: -1,
+    clientY: -1,
   },
 };
 
@@ -35,10 +50,16 @@ export const questionSlice = createSlice({
         ...action.payload,
       };
     },
+    updatePanelOptions: (state, action) => {
+      state.panelOptions = { ...action.payload.panelOptions };
+    },
+    updateMouseData: (state, action) => {
+      state.mouseData = { ...action.payload };
+    },
   },
 });
 
 // reducer方法的每一个case都会生成一个Action
-export const { updateCurrentData } = questionSlice.actions;
+export const { updateCurrentData, updateMouseData } = questionSlice.actions;
 
 export default questionSlice.reducer;

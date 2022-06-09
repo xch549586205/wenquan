@@ -1,38 +1,39 @@
-import { useState } from "react";
+import { createRef, useEffect } from "react";
 import style from "./index.less";
 import QuestionContent from "./QuestionContent";
 import QuestionType from "./QuestionType";
-import { Button, Layout } from "antd";
-import { AppstoreAddOutlined } from "@ant-design/icons";
+import { Layout } from "antd";
 import propTypes from "prop-types";
+import { useSelector, useDispatch } from "react-redux";
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Sider } = Layout;
 function Panel(props) {
   const { direction = "row" } = props;
   const isPhone = /Mobi|Android|iPhone/i.test(navigator.userAgent);
+  const contentRef = createRef(null);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch({
+      type: "question/updatePanelOptions",
+      payload: {
+        panelOptions: {
+          direction,
+          isPhone,
+        },
+      },
+    });
+  }, []);
   return (
     <div className={direction === "row" ? style.panelRow : style.panelCol}>
-      {/* <Button type="primary" className={style.Affix}>
-        <AppstoreAddOutlined />
-      </Button> */}
       {isPhone && direction === "row" && (
-        <Sider
-          breakpoint="lg"
-          collapsedWidth="0"
-          onBreakpoint={(broken) => {
-            console.log(broken);
-          }}
-          onCollapse={(collapsed, type) => {
-            console.log(collapsed, type);
-          }}
-        >
-          <QuestionType direction={direction} />
+        <Sider breakpoint="lg" collapsedWidth="0">
+          <QuestionType contentRef={contentRef} />
         </Sider>
       )}
       {(!isPhone || direction !== "row") && (
-        <QuestionType direction={direction} isPhone={isPhone} />
+        <QuestionType contentRef={contentRef} />
       )}
-      <QuestionContent direction={direction} />
+      <QuestionContent contentRef={contentRef} />
     </div>
   );
 }
