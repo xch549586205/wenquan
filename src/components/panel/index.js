@@ -4,12 +4,17 @@ import QuestionContent from "./QuestionContent";
 import QuestionType from "./QuestionType";
 import { Layout } from "antd";
 import propTypes from "prop-types";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const { Sider } = Layout;
 function Panel(props) {
-  const { direction = "row" } = props;
-  const isPhone = /Mobi|Android|iPhone/i.test(navigator.userAgent);
+  const {
+    direction = "row",
+    isSuppertPhone = true,
+    moreSetShowModal = false,
+  } = props;
+  const isPhone =
+    /Mobi|Android|iPhone/i.test(navigator.userAgent) && isSuppertPhone;
   const contentRef = createRef(null);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -19,6 +24,7 @@ function Panel(props) {
         panelOptions: {
           direction,
           isPhone,
+          moreSetShowModal,
         },
       },
     });
@@ -26,7 +32,7 @@ function Panel(props) {
   return (
     <div className={direction === "row" ? style.panelRow : style.panelCol}>
       {isPhone && direction === "row" && (
-        <Sider breakpoint="lg" collapsedWidth="0">
+        <Sider breakpoint="lg" collapsedWidth="0" width="35%">
           <QuestionType contentRef={contentRef} />
         </Sider>
       )}
@@ -39,7 +45,11 @@ function Panel(props) {
 }
 
 Panel.propTypes = {
-  //面板方向 row column
+  // 面板方向 row column
   direction: propTypes.string,
+  // 是否支持手机
+  isSuppertPhone: propTypes.bool,
+  // 更多设置是否弹窗显示
+  moreSetShowModal: propTypes.bool,
 };
 export default Panel;

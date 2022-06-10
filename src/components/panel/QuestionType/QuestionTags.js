@@ -2,10 +2,9 @@ import { useState, useRef } from "react";
 import { questionTypes } from "@/mock";
 import { Tag } from "antd";
 import style from "./index.less";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import Draggable from "react-draggable";
 import { updateMouseData } from "@/reducer/questions/question";
-import { click } from "@testing-library/user-event/dist/click";
 
 // import { Droppable } from "react-beautiful-dnd";
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -33,6 +32,7 @@ export default (props) => {
       uiData.node.style.transform === "" ||
       uiData.node.style.transform === "translate(0px, 0px)";
     if (isClick) {
+      // 订阅给content questionList
       dispatch(
         updateMouseData({
           type: "click",
@@ -43,6 +43,8 @@ export default (props) => {
     }
     const obj = _event.type === "touchend" ? _event.changedTouches[0] : _event;
     const { clientX, clientY } = obj;
+
+    // 订阅给content questionList
     dispatch(
       updateMouseData({
         clientX,
@@ -51,7 +53,8 @@ export default (props) => {
         questionId,
       })
     );
-    // 被拖拽的题型回到初始位置
+
+    // 被拖拽的题型tag回到初始位置
     uiData.x = 0;
     uiData.y = 0;
     draggleRef.current.state.x = 0;
@@ -66,6 +69,8 @@ export default (props) => {
   const onDrag = (_event, uiData, draggleRef) => {
     const obj = _event.type === "touchmove" ? _event.touches[0] : _event;
     const { clientX, clientY } = obj;
+    
+    // 订阅给content questionList
     //鼠标滑动时，更新鼠标位置
     dispatch(
       updateMouseData({
