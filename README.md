@@ -1,3 +1,8 @@
+# 注意事项
+
+需要全局安装yarn，即npm install yarn -g，然后用yarn install项目，使用npm install项目将无法运行
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
