@@ -47,9 +47,7 @@ function Panel(props) {
 Panel.propTypes = {
   // 面板方向 row column
   direction: propTypes.string,
-  // 是否支持手机
-  isSuppertPhone: propTypes.bool,
-  // 更多设置是否弹窗显示
+  // 题目的设置是否弹窗显示
   moreSetShowModal: propTypes.bool,
 };
 export default Panel;

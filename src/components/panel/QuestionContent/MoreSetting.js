@@ -1,7 +1,7 @@
 import { Tabs } from "antd";
 import style from "./index.less";
 import { useSelector } from "react-redux";
-import { Button, Modal } from "antd";
+import {  Modal } from "antd";
 const { TabPane } = Tabs;
 
 function Setting() {

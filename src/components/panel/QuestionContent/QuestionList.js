@@ -2,17 +2,17 @@ import { useState, createRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import style from "./index.less";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { updateCurrentData } from "@/reducer/questions/question";
+import { updateQuestionList, addQuestion } from "@/reducer/questions/question";
 import { questionTypes } from "@/mock";
 
 function QuestionList(props) {
   const [newItemIndex, setNewItemIndex] = useState(-1);
 
-  const currentData = useSelector((state) => state.question.currentData);
+  const questionList = useSelector((state) => state.question.questionList);
   const mouseData = useSelector((state) => state.question.mouseData);
   const dispatch = useDispatch();
-  const { questionList } = currentData;
 
+  // 拖动停止时换位
   const onDragEnd = (result) => {
     if (!result.destination) {
       return;
@@ -29,13 +29,11 @@ function QuestionList(props) {
       result.destination.index
     );
     dispatch(
-      updateCurrentData({
-        ...currentData,
-        questionList: items,
-      })
+      updateQuestionList(items)
     );
   };
 
+  // 监听题目的鼠标拖动
   useEffect(() => {
     const { clientX, clientY, type, questionId } = mouseData;
     //列表的宽高
@@ -92,34 +90,13 @@ function QuestionList(props) {
   };
 
   const addItem = (questionId, _newItemIndex = newItemIndex) => {
-    const newItem = createItem(questionId);
-    const _questionList = [...questionList];
-    const newList = [
-      ..._questionList.splice(0, _newItemIndex),
-      newItem,
-      ..._questionList,
-    ];
-    dispatch(
-      updateCurrentData({
-        ...currentData,
-        questionList: newList,
-      })
-    );
+    dispatch(addQuestion({
+      questionId, newItemIndex: _newItemIndex
+    }))
     setNewItemIndex(-1);
   };
 
-  const createItem = (questionId) => {
-    const questionType = questionTypes.filter(
-      (q) => q.questionId === questionId
-    )[0];
-    return {
-      name: questionType.name,
-      questionType: questionType.questionType,
-      questionId: questionType.questionId,
-      options: ["选项1", "选项2", "选项3"],
-      checked: [],
-    };
-  };
+
   const contentRef = createRef(null);
   return (
     <div className={style.content}>
