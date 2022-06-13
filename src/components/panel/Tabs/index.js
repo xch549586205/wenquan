@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import style from "./index.less";
 import { Tabs } from "antd";
-import QuestionTags from "./QuestionTags";
+import QuestionTags from "./QuestionType";
 const { TabPane } = Tabs;
 
 function ContentType(props) {
