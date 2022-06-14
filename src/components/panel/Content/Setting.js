@@ -1,7 +1,7 @@
 import { Tabs } from "antd";
 import style from "./index.less";
 import { useSelector } from "react-redux";
-import {  Modal } from "antd";
+import { Modal, Switch } from "antd";
 const { TabPane } = Tabs;
 
 function Setting() {
@@ -13,7 +13,7 @@ function Setting() {
           全局设置
         </TabPane>
         <TabPane tab="题目设置" key="setting2">
-          对选中的题目单独设置
+          此题必答 <Switch defaultChecked />
         </TabPane>
       </Tabs>
     </div>
