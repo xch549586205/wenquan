@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import style from "./index.less";
 import { Row, Col } from "antd";
-import QuestionList from "./QuestionList";
-import MoreSetting from "./MoreSetting";
+import QuestionList from "./List";
+import MoreSetting from "./Setting";
 
 function Content() {
   const { direction, isPhone, moreSetShowModal } = useSelector(

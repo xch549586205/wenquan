@@ -1,7 +1,7 @@
 import { createRef, useEffect } from "react";
 import style from "./index.less";
-import QuestionContent from "./QuestionContent";
-import QuestionType from "./QuestionType";
+import QuestionContent from "./Content";
+import QuestionType from "./Tabs";
 import { Layout } from "antd";
 import propTypes from "prop-types";
 import { useDispatch } from "react-redux";
@@ -24,6 +24,7 @@ function Panel(props) {
       },
     });
   }, []);
+  
   return (
     <div className={direction === "row" ? style.panelRow : style.panelCol}>
       {isPhone && direction === "row" && (

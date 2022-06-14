@@ -1,15 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { questionTypes } from "@/mock";
-
-const createItem = (questionId) => {
-  const question = questionTypes.filter((q) => q.questionId === questionId)[0];
-  return {
-    name: question.name,
-    questionId: question.questionId,
-    options: ["选项1", "选项2", "选项3"],
-    checked: [],
-  };
-};
 
 const initialState = {
   questionOption: {
@@ -53,29 +42,11 @@ export const questionSlice = createSlice({
   name: "question",
   initialState,
   reducers: {
+    // 更新题目列表
     updateQuestionList: (state, action) => {
-      state.questionList = [...action.payload];
-    },
-    // 新增题目
-    addQuestion: (state, action) => {
-      const { questionId, newItemIndex } = action.payload;
-      const newItem = createItem(questionId);
-      const _questionList = [...state.questionList];
-      const newList = [
-        ..._questionList.splice(0, newItemIndex),
-        newItem,
-        ..._questionList,
+      state.questionList = [
+        ...action.payload
       ];
-      state.questionList = newList;
-    },
-    // 编辑题目
-    editQuestion: (state, action) => {
-      const { index, question } = action.payload;
-      const newList = [...state.questionList];
-      newList[index] = {
-        ...question,
-      };
-      state.questionList = newList;
     },
     // 更新panel组件根配置到store，panel下面的子组件可通过redux获取panel组件根配置
     updatePanelOptions: (state, action) => {
@@ -89,7 +60,6 @@ export const questionSlice = createSlice({
 });
 
 // reducer方法的每一个case都会生成一个Action
-export const { updateQuestionList, updateMouseData, addQuestion } =
-  questionSlice.actions;
+export const { updateQuestionList, updateMouseData, updatePanelOptions } = questionSlice.actions;
 
 export default questionSlice.reducer;

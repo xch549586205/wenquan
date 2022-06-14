@@ -1,15 +1,29 @@
 import { useState, createRef, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import style from "./index.less";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { updateQuestionList, addQuestion } from "@/reducer/questions/question";
+import { updateQuestionList } from "@@/src/reducer/panel/panel";
 import { questionTypes } from "@/mock";
+import { useSelector, useDispatch } from "react-redux";
+
+const createItem = (questionId) => {
+  const questionType = questionTypes.filter(
+    (q) => q.questionId === questionId
+  )[0];
+  return {
+    name: questionType.name,
+    questionType: questionType.questionType,
+    questionId: questionType.questionId,
+    options: ["选项1", "选项2", "选项3"],
+    checked: [],
+  };
+};
 
 function QuestionList(props) {
+
   const [newItemIndex, setNewItemIndex] = useState(-1);
 
   const questionList = useSelector((state) => state.question.questionList);
-  const mouseData = useSelector((state) => state.question.mouseData);
+
   const dispatch = useDispatch();
 
   // 拖动停止时换位
@@ -33,7 +47,9 @@ function QuestionList(props) {
     );
   };
 
-  // 监听题目的鼠标拖动
+  const mouseData = useSelector((state) => state.question.mouseData);
+
+  // 监听题型的鼠标拖动
   useEffect(() => {
     const { clientX, clientY, type, questionId } = mouseData;
     //列表的宽高
@@ -90,14 +106,23 @@ function QuestionList(props) {
   };
 
   const addItem = (questionId, _newItemIndex = newItemIndex) => {
-    dispatch(addQuestion({
-      questionId, newItemIndex: _newItemIndex
-    }))
+    const newItem = createItem(questionId);
+    const _questionList = [...questionList];
+    const newList = [
+      ..._questionList.splice(0, _newItemIndex),
+      newItem,
+      ..._questionList,
+    ];
+    dispatch(
+      updateQuestionList(
+        newList
+      )
+    );
     setNewItemIndex(-1);
   };
 
-
   const contentRef = createRef(null);
+
   return (
     <div className={style.content}>
       <div className={style.title}> title...</div>
