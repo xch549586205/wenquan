@@ -8,13 +8,8 @@ import { useDispatch } from "react-redux";
 
 const { Sider } = Layout;
 function Panel(props) {
-  const {
-    direction = "row",
-    isSuppertPhone = true,
-    moreSetShowModal = false,
-  } = props;
-  const isPhone =
-    /Mobi|Android|iPhone/i.test(navigator.userAgent) && isSuppertPhone;
+  const { direction = "row", isFold = true, moreSetShowModal = false } = props;
+  const isPhone = /Mobi|Android|iPhone/i.test(navigator.userAgent);
   const contentRef = createRef(null);
   const dispatch = useDispatch();
   useEffect(() => {

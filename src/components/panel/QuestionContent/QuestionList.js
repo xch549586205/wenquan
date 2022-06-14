@@ -111,8 +111,8 @@ function QuestionList(props) {
                   {questionList.map((question, i) => {
                     return (
                       <Draggable
-                        key={question.questionType + i}
-                        draggableId={question.questionType + i}
+                        key={question.questionId + i}
+                        draggableId={question.questionId + i}
                         index={i}
                         dataType={"list" + i}
                       >
