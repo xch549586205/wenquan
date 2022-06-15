@@ -1,4 +1,5 @@
 var webpack = require("webpack");
+const getCSSModuleLocalIdent = require("react-dev-utils/getCSSModuleLocalIdent");
 
 const hasJsxRuntime = (() => {
   if (process.env.DISABLE_NEW_JSX_TRANSFORM === "true") {
@@ -12,6 +13,47 @@ const hasJsxRuntime = (() => {
     return false;
   }
 })();
+// common function to get style loaders
+const getStyleLoaders = (cssOptions, preProcessor) => {
+  const loaders = [
+    require.resolve("style-loader"),
+    {
+      loader: require.resolve("css-loader"),
+      options: cssOptions,
+    },
+    {
+      // Options for PostCSS as we reference these options twice
+      // Adds vendor prefixing based on your specified browser support in
+      // package.json
+      loader: require.resolve("postcss-loader"),
+      options: {
+        // Necessary for external CSS imports to work
+        // https://github.com/facebook/create-react-app/issues/2677
+        ident: "postcss",
+        plugins: () => [
+          require("postcss-flexbugs-fixes"),
+          require("postcss-preset-env")({
+            autoprefixer: {
+              flexbox: "no-2009",
+            },
+            stage: 3,
+          }),
+        ],
+        sourceMap: true,
+      },
+    },
+  ].filter(Boolean);
+  if (preProcessor) {
+    loaders.push({
+      loader: require.resolve(preProcessor),
+      options: {
+        sourceMap: true,
+      },
+    });
+  }
+  return loaders;
+};
+
 module.exports = {
   components: "src/components/**/*.js",
   webpackConfig: {
@@ -44,11 +86,24 @@ module.exports = {
         },
         {
           test: /\.css$/,
-          use: ["style-loader", "css-loader"],
+          exclude: /\.module\.css$/,
+          use: getStyleLoaders({
+            importLoaders: 1,
+            sourceMap: true,
+          }),
+          sideEffects: true,
         },
         {
+          //todo 现在所有less文档都按照modules，后续通过文件名作为区分
           test: /\.less$/,
-          use: ["style-loader", "css-loader"],
+          use: getStyleLoaders(
+            {
+              importLoaders: 2,
+              sourceMap: false,
+              modules: true,
+            },
+            "less-loader"
+          ),
         },
       ],
     },

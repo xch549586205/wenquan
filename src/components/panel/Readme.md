@@ -1,7 +1,19 @@
 Panel 面板:
 
-<image src="../components/images/panel.jpg"></image>
+- 横向布局
 
-```jsx
+```javascript
+<Panel direction="row">
+  <div>1</div>
+  <div>2</div>
+</Panel>
+```
 
+- 众向布局
+
+```javascript
+<Panel direction="col">
+  <div>1</div>
+  <div>2</div>
+</Panel>
 ```

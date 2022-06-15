@@ -1,4 +1,4 @@
-import Panel from "./pages/Panel";
+import Panel from "./pages/Main";
 const routers = [
   {
     path: "/",

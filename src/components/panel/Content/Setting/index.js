@@ -1,41 +1,39 @@
-import { Tabs } from "antd";
 import style from "./index.less";
-import { useSelector } from "react-redux";
 import { Modal, Switch } from "antd";
-const { TabPane } = Tabs;
-
-function SettingTab() {
-  const { isPhone } = useSelector((state) => state.question.panelOptions);
-  return (
-    <div className={isPhone ? style.MoreSettingModal : style.MoreSetting}>
-      <Tabs defaultActiveKey="1">
-        <TabPane tab="全局设置" key="setting1">
-          全局设置
-        </TabPane>
-        <TabPane tab="题目设置" key="setting2">
-          此题必答 <Switch defaultChecked />
-        </TabPane>
-      </Tabs>
-    </div>
-  );
-}
+import Tabs from "../../Tabs";
 
 function Setting(props) {
-  const { isPhone, moreSetShowModal } = useSelector(
-    (state) => state.question.panelOptions
-  );
-  const { moreSetIndex, setMoreSetIndex } = props;
-  const showModal = isPhone || moreSetShowModal;
-  return showModal ? (
+  const { moreSetIndex, setMoreSetIndex, isSettingModal } = props;
+  function GlobSetting() {
+    return <div>全局设置</div>;
+  }
+  const options = [
+    {
+      tabKey: "set1",
+      title: "全局设置",
+      component: (() => "N/A")(),
+    },
+    { tabKey: "set2", title: "题目设置", component: (() => "N/A")() },
+  ];
+  return isSettingModal ? (
     <Modal
       title="更多设置"
       visible={moreSetIndex > -1}
       onCancel={() => setMoreSetIndex(-1)}
     >
-      <SettingTab />
+      <Tabs
+        options={options}
+        isSettingModal={isSettingModal}
+        className={style.MoreSettingModal}
+      />
     </Modal>
   ) : (
-    <SettingTab />
+    <Tabs
+      options={options}
+      isSettingModal={isSettingModal}
+      className={style.MoreSetting}
+    />
   );
 }
+
 export default Setting;

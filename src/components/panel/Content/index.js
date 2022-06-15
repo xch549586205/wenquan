@@ -1,16 +1,12 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import style from "./index.less";
 import { Row, Col } from "antd";
-import QuestionList from "./List";
-import MoreSetting from "./Setting";
+import List from "./List";
+import Setting from "./Setting";
 
-function Content() {
-  const { direction, isPhone, moreSetShowModal } = useSelector(
-    (state) => state.question.panelOptions
-  );
+function Content(props) {
+  const { showModal = false, direction = "row" } = props;
   const [moreSetIndex, setMoreSetIndex] = useState(-1);
-  const showModal = isPhone || moreSetShowModal;
 
   return (
     <Row
@@ -19,10 +15,10 @@ function Content() {
       }
     >
       <Col span={showModal ? 24 : 20}>
-        <QuestionList setMoreSetIndex={setMoreSetIndex} />
+        <List setMoreSetIndex={setMoreSetIndex} />
       </Col>
       <Col span={showModal ? 0 : 4}>
-        <MoreSetting
+        <Setting
           moreSetIndex={moreSetIndex}
           setMoreSetIndex={setMoreSetIndex}
         />

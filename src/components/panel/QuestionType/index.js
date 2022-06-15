@@ -1,15 +1,12 @@
 import { useState, useRef } from "react";
-import { questionTypes } from "../../../../mock";
+import { questionTypes } from "../../../mock";
 import { Tag } from "antd";
 import style from "./index.less";
-import { useDispatch } from "react-redux";
 import Draggable from "react-draggable";
-import { updateMouseData } from "../../../../reducer/panel/panel";
 
-// import { Droppable } from "react-beautiful-dnd";
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (props) => {
-  const dispatch = useDispatch();
+  const { setMouseData } = props;
 
   const groupingQuestionTypes = (() => {
     const tags = [];
@@ -33,13 +30,12 @@ export default (props) => {
 
     // 订阅给content questionList
     //鼠标滑动时，更新鼠标位置
-    dispatch(
-      updateMouseData({
-        clientX,
-        clientY,
-        type: "move",
-      })
-    );
+
+    setMouseData({
+      clientX,
+      clientY,
+      type: "move",
+    });
   };
 
   const onStop = (_event, uiData, draggleRef, questionId) => {
@@ -48,26 +44,24 @@ export default (props) => {
       uiData.node.style.transform === "translate(0px, 0px)";
     if (isClick) {
       // 订阅给content questionList
-      dispatch(
-        updateMouseData({
-          type: "click",
-          questionId,
-        })
-      );
+
+      setMouseData({
+        type: "click",
+        questionId,
+      });
+
       return;
     }
     const obj = _event.type === "touchend" ? _event.changedTouches[0] : _event;
     const { clientX, clientY } = obj;
 
     // 订阅给content questionList
-    dispatch(
-      updateMouseData({
-        clientX,
-        clientY,
-        type: "stop",
-        questionId,
-      })
-    );
+    setMouseData({
+      clientX,
+      clientY,
+      type: "stop",
+      questionId,
+    });
 
     // 被拖拽的题型tag回到初始位置
     uiData.x = 0;
