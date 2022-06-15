@@ -1,10 +1,10 @@
 import { useState, useRef } from "react";
-import { questionTypes } from "../../../mock";
+import { questionTypes } from "../../../../mock";
 import { Tag } from "antd";
 import style from "./index.less";
 import { useDispatch } from "react-redux";
 import Draggable from "react-draggable";
-import { updateMouseData } from "../../../reducer/panel/panel";
+import { updateMouseData } from "../../../../reducer/panel/panel";
 
 // import { Droppable } from "react-beautiful-dnd";
 // eslint-disable-next-line import/no-anonymous-default-export

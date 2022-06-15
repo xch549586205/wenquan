@@ -1,4 +1,3 @@
-import { lazy } from "react";
 import Panel from "./pages/Panel";
 const routers = [
   {

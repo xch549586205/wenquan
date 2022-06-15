@@ -1,5 +1,5 @@
 import React from "react";
-import Panel from "@@/src/components/panel";
+import Panel from "@@/src/components/Panel";
 
 class Main extends React.PureComponent {
   render() {
