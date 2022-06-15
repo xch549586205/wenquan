@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { Modal, Switch } from "antd";
 const { TabPane } = Tabs;
 
-function Setting() {
+function SettingTab() {
   const { isPhone } = useSelector((state) => state.question.panelOptions);
   return (
     <div className={isPhone ? style.MoreSettingModal : style.MoreSetting}>
@@ -20,7 +20,7 @@ function Setting() {
   );
 }
 
-function MoreSetting(props) {
+function Setting(props) {
   const { isPhone, moreSetShowModal } = useSelector(
     (state) => state.question.panelOptions
   );
@@ -32,10 +32,10 @@ function MoreSetting(props) {
       visible={moreSetIndex > -1}
       onCancel={() => setMoreSetIndex(-1)}
     >
-      <Setting />
+      <SettingTab />
     </Modal>
   ) : (
-    <Setting />
+    <SettingTab />
   );
 }
-export default MoreSetting;
+export default Setting;

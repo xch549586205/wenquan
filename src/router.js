@@ -1,9 +1,9 @@
 import { lazy } from "react";
-
+import Panel from "./pages/Panel";
 const routers = [
   {
     path: "/",
-    Component: lazy(() => import("./pages/Panel")),
+    Component: Panel,
   },
 ];
 export default routers;

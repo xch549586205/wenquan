@@ -1,8 +1,8 @@
 import { useState, createRef, useEffect } from "react";
 import style from "./index.less";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { updateQuestionList } from "@@/src/reducer/panel/panel";
-import { questionTypes } from "@/mock";
+import { updateQuestionList } from "../../../../reducer/panel/panel";
+import { questionTypes } from "../../../../mock";
 import { useSelector, useDispatch } from "react-redux";
 
 const createItem = (questionId) => {
@@ -18,8 +18,7 @@ const createItem = (questionId) => {
   };
 };
 
-function QuestionList(props) {
-
+function List(props) {
   const [newItemIndex, setNewItemIndex] = useState(-1);
 
   const questionList = useSelector((state) => state.question.questionList);
@@ -42,9 +41,7 @@ function QuestionList(props) {
       result.source.index,
       result.destination.index
     );
-    dispatch(
-      updateQuestionList(items)
-    );
+    dispatch(updateQuestionList(items));
   };
 
   const mouseData = useSelector((state) => state.question.mouseData);
@@ -113,11 +110,7 @@ function QuestionList(props) {
       newItem,
       ..._questionList,
     ];
-    dispatch(
-      updateQuestionList(
-        newList
-      )
-    );
+    dispatch(updateQuestionList(newList));
     setNewItemIndex(-1);
   };
 
@@ -172,4 +165,4 @@ function QuestionList(props) {
   );
 }
 
-export default QuestionList;
+export default List;

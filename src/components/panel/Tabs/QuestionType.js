@@ -1,10 +1,10 @@
 import { useState, useRef } from "react";
-import { questionTypes } from "@/mock";
+import { questionTypes } from "../../../mock";
 import { Tag } from "antd";
 import style from "./index.less";
 import { useDispatch } from "react-redux";
 import Draggable from "react-draggable";
-import { updateMouseData } from "@@/src/reducer/panel/panel";
+import { updateMouseData } from "../../../reducer/panel/panel";
 
 // import { Droppable } from "react-beautiful-dnd";
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -30,7 +30,7 @@ export default (props) => {
   const onDrag = (_event, uiData, draggleRef) => {
     const obj = _event.type === "touchmove" ? _event.touches[0] : _event;
     const { clientX, clientY } = obj;
-    
+
     // 订阅给content questionList
     //鼠标滑动时，更新鼠标位置
     dispatch(
@@ -80,8 +80,6 @@ export default (props) => {
       draggleRef.current.state.y = 0;
     }, 200);
   };
-
-
 
   return (
     <div>
