@@ -1,26 +1,12 @@
 import { useState, useRef } from "react";
-import { questionTypes } from "../../../mock";
 import { Tag } from "antd";
 import style from "./index.less";
 import Draggable from "react-draggable";
+import PropTypes from "prop-types";
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default (props) => {
-  const { setMouseData } = props;
-
-  const groupingQuestionTypes = (() => {
-    const tags = [];
-    questionTypes.map(({ name, group, icon, questionId }) => {
-      if (!tags.filter((tag) => tag.groupName === group).length) {
-        tags.push({ groupName: group, groupTags: [] });
-      }
-      const key = tags.findIndex((value) => value.groupName === group);
-      if (key !== -1) {
-        tags[key].groupTags.push({ name, icon, questionId });
-      }
-    });
-    return tags;
-  })();
+const QuestionType = (props) => {
+  const { setMouseData = () => {}, groupingQuestionTypes } = props;
 
   const [mouseIndex, setMouseIndex] = useState([-1, -1]);
 
@@ -74,6 +60,7 @@ export default (props) => {
       draggleRef.current.state.y = 0;
     }, 200);
   };
+ 
 
   return (
     <div>
@@ -82,8 +69,9 @@ export default (props) => {
           <div key={"groupName" + i}>
             <p> {groupName}</p>
             <div>
-              {groupTags.map(({ name, icon, questionId }, j) => {
-                const draggleRef = useRef(null);
+              {groupTags.map(function ({ name, icon, questionId }, j) {
+                 // eslint-disable-next-line react-hooks/rules-of-hooks
+                 const draggleRef = useRef(null);
                 return (
                   <Draggable
                     ref={draggleRef}
@@ -119,4 +107,19 @@ export default (props) => {
       })}
     </div>
   );
+};
+export default QuestionType;
+
+QuestionType.propTypes = {
+  /**
+   * 拖动题型/点击时，触发的事件
+   */
+  setMouseData: PropTypes.func,
+  /**
+   * 题型列表（已分组）
+   */
+  groupingQuestionTypes: PropTypes.array,
+};
+QuestionType.defaultProps = {
+  groupingQuestionTypes: [],
 };

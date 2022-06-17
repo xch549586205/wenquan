@@ -1,30 +1,31 @@
 import { useState, createRef, useEffect } from "react";
 import style from "./index.less";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { updateQuestionList } from "../../../../reducer/panel/panel";
-import { questionTypes } from "../../../../mock";
-import { useSelector, useDispatch } from "react-redux";
-
-const createItem = (questionId) => {
-  const questionType = questionTypes.filter(
-    (q) => q.questionId === questionId
-  )[0];
-  return {
-    name: questionType.name,
-    questionType: questionType.questionType,
-    questionId: questionType.questionId,
-    options: ["选项1", "选项2", "选项3"],
-    checked: [],
-  };
-};
+import PropTypes from "prop-types";
 
 function List(props) {
   const [newItemIndex, setNewItemIndex] = useState(-1);
 
-  const questionList = useSelector((state) => state.question.questionList);
-
-  const dispatch = useDispatch();
-
+  const {
+    list,
+    updateList,
+    mouseData,
+    questionTypes,
+    setCurrentIndex,
+    globalOptions,
+  } = props;
+  const createItem = (questionId) => {
+    const questionType = questionTypes.filter(
+      (q) => q.questionId === questionId
+    )[0];
+    return {
+      name: questionType.name,
+      questionType: questionType.questionType,
+      questionId: questionType.questionId,
+      options: ["选项1", "选项2", "选项3"],
+      checked: [],
+    };
+  };
   // 拖动停止时换位
   const onDragEnd = (result) => {
     if (!result.destination) {
@@ -36,35 +37,40 @@ function List(props) {
       result[endIndex] = list[startIndex];
       return result;
     };
-    const items = reorder(
-      questionList,
-      result.source.index,
-      result.destination.index
-    );
-    dispatch(updateQuestionList(items));
+    const items = reorder(list, result.source.index, result.destination.index);
+    updateList(items);
   };
-
-  const mouseData = useSelector((state) => state.question.mouseData);
 
   // 监听题型的鼠标拖动
   useEffect(() => {
     const { clientX, clientY, type, questionId } = mouseData;
+
     //列表的宽高
-    const { clientWidth, clientHeight } = contentRef.current;
-    // 列表对于窗口的偏移
-    const { offsetTop, offsetLeft } = contentRef.current.offsetParent;
+    const { clientWidth, clientHeight, offsetTop } = contentRef.current;
+    const { scrollTop } =
+      contentRef.current.parentElement.parentElement.parentElement
+        .parentElement;
+    // console.log(contentRef.current.clientHeight);
+    // console.log(contentRef.current.clientHeight);
+    // 列表对于窗口的左偏移
+    const { offsetLeft } = contentRef.current.offsetParent;
     if (type === "stop") {
       setNewItemIndex(-1);
     }
     //纯点击
     if (questionId && type === "click") {
-      addItem(questionId, questionList.length + 1);
+      addItem(questionId, list.length + 1);
       return;
     }
     const questionNodeList = contentRef.current.childNodes[0].childNodes;
     const range = [...questionNodeList].map((_node, index) => {
       return {
-        pos: _node.offsetTop + offsetTop + _node.clientHeight / 2 - clientY,
+        pos:
+          _node.offsetTop +
+          offsetTop -
+          scrollTop +
+          _node.clientHeight / 2 -
+          clientY,
         index,
       };
     });
@@ -91,7 +97,7 @@ function List(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mouseData]);
 
-  const isDrapInto = (index) => {
+  const isDrapIntoStyle = (index) => {
     if (index === 0 && newItemIndex === 0) {
       return style.intoQuestionFirst;
     }
@@ -104,13 +110,9 @@ function List(props) {
 
   const addItem = (questionId, _newItemIndex = newItemIndex) => {
     const newItem = createItem(questionId);
-    const _questionList = [...questionList];
-    const newList = [
-      ..._questionList.splice(0, _newItemIndex),
-      newItem,
-      ..._questionList,
-    ];
-    dispatch(updateQuestionList(newList));
+    const _list = [...list];
+    const newList = [..._list.splice(0, _newItemIndex), newItem, ..._list];
+    updateList(newList);
     setNewItemIndex(-1);
   };
 
@@ -118,15 +120,16 @@ function List(props) {
 
   return (
     <div className={style.content}>
-      <div className={style.title}> title...</div>
+      <div className={style.title}> {globalOptions.title}</div>
+      <div className={style.subTitle}> {globalOptions.subTitle}</div>
       <div ref={contentRef} className={style.list}>
-        <DragDropContext onDragEnd={onDragEnd} key={questionList.length}>
+        <DragDropContext onDragEnd={onDragEnd} key={list.length}>
           {/* Your target */}
           <Droppable droppableId="id">
             {(provided) => {
               return (
                 <div ref={provided.innerRef} {...provided.droppableProps}>
-                  {questionList.map((question, i) => {
+                  {list.map((question, i) => {
                     return (
                       <Draggable
                         key={question.questionId + i}
@@ -139,12 +142,12 @@ function List(props) {
                             <div
                               ref={_provided.innerRef}
                               {..._provided.draggableProps}
-                              onClick={() => props.setMoreSetIndex(i)}
+                              onClick={() => setCurrentIndex(i)}
                               {..._provided.dragHandleProps}
                             >
                               <div
                                 key={"question" + i}
-                                className={isDrapInto(i)}
+                                className={isDrapIntoStyle(i)}
                               >
                                 {question.name}
                               </div>
@@ -164,5 +167,32 @@ function List(props) {
     </div>
   );
 }
+
+List.propTypes = {
+  /**
+   * 题目列表数据
+   */
+  list: PropTypes.array,
+  /**
+   * 需要监听的鼠标拖动事件，用来判断拖动添加题型
+   */
+  mouseData: PropTypes.object,
+  /**
+   * 更新题目列表数据
+   */
+  updateList: PropTypes.func,
+  /**
+   * 更新当前点击的索引，提供给Setting组件使用
+   */
+  setCurrentIndex: PropTypes.func,
+  /**
+   * 全局的一些配置，List组件主要是获取 标题title、副标题subtitle
+   */
+  globalOptions: PropTypes.object,
+};
+List.defaultProps = {
+  list: [],
+  mouseData: {},
+};
 
 export default List;

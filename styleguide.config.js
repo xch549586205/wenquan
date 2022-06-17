@@ -1,5 +1,4 @@
 var webpack = require("webpack");
-const getCSSModuleLocalIdent = require("react-dev-utils/getCSSModuleLocalIdent");
 
 const hasJsxRuntime = (() => {
   if (process.env.DISABLE_NEW_JSX_TRANSFORM === "true") {
@@ -116,4 +115,32 @@ module.exports = {
       }),
     ],
   },
+  sections: [
+    {
+      name: "Panel",
+      components: ["src/components/Panel/index.js"],
+      content: "docs/Panel.md",
+      sections: [
+        {
+          name: "Tab",
+          components: [
+            "src/components/Panel/Tab/index.js",
+            "src/components/Panel/QuestionType/index.js",
+          ],
+        },
+        {
+          name: "Content",
+          components: [
+            "src/components/Panel/Content/index.js",
+            "src/components/Panel/Content/List/index.js",
+            "src/components/Panel/Content/Setting/index.js",
+          ],
+        },
+      ],
+    },
+    {
+      name: "Other",
+      components: [],
+    },
+  ],
 };

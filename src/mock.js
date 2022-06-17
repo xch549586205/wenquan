@@ -6,41 +6,57 @@ import {
   EditOutlined,
   OrderedListOutlined,
 } from "@ant-design/icons";
-export const questionTypes = [
+const questionTypes = [
   {
-    name: "question1",
+    name: "单选题",
     group: "group1",
     icon: <CheckOutlined />,
     questionId: "001",
   },
   {
-    name: "question2",
+    name: "多选题",
     group: "group1",
     icon: <UnorderedListOutlined />,
     questionId: "002",
   },
   {
-    name: "question3",
-    group: "group1",
+    name: "图片选择",
+    group: "选择题",
     icon: <FileImageOutlined />,
     questionId: "003",
   },
   {
-    name: "question4",
-    group: "group1",
+    name: "图片投票",
+    group: "选择题",
     icon: <FilePptOutlined />,
     questionId: "004",
   },
   {
-    name: "question1",
-    group: "group2",
+    name: "填空题",
+    group: "填空题",
     icon: <EditOutlined />,
     questionId: "005",
   },
   {
-    name: "question2",
-    group: "group2",
+    name: "多项填空",
+    group: "填空题",
     icon: <OrderedListOutlined />,
     questionId: "006",
   },
 ];
+//给题型分组
+const groupingQuestionTypes = (() => {
+  const tags = [];
+  questionTypes.map(({ name, group, icon, questionId }) => {
+    if (!tags.filter((tag) => tag.groupName === group).length) {
+      tags.push({ groupName: group, groupTags: [] });
+    }
+    const key = tags.findIndex((value) => value.groupName === group);
+    if (key !== -1) {
+      tags[key].groupTags.push({ name, icon, questionId });
+    }
+  });
+  return tags;
+})();
+console.log(groupingQuestionTypes);
+export { groupingQuestionTypes, questionTypes };

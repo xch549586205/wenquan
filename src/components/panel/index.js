@@ -1,17 +1,23 @@
 import style from "./index.less";
 
 import PropTypes from "prop-types";
-
+import classNames from "classnames";
 /**
  *Panel分为2个模块： 选项 和 列表与设置
  *
  *列表与设置分为两个子组件，即列表和设置
  */
 function Panel(props) {
-  const { direction, children } = props;
+  const { direction, children, className } = props;
 
   return (
-    <div className={direction === "row" ? style.panelRow : style.panelCol}>
+    <div
+      className={classNames({
+        [style.panelRow]: direction === "row",
+        [style.panelCol]: direction === "col",
+        [className]: className,
+      })}
+    >
       {children}
     </div>
   );
