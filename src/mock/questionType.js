@@ -6,6 +6,7 @@ import {
   EditOutlined,
   OrderedListOutlined,
 } from "@ant-design/icons";
+
 const questionTypes = [
   {
     name: "单选题",
@@ -13,14 +14,12 @@ const questionTypes = [
     group: "选择题",
     icon: <CheckOutlined />,
     questionId: "001",
-    required: true,
   },
   {
     name: "多选题",
     group: "选择题",
     title: "请选择以下选项 (多选)",
     icon: <UnorderedListOutlined />,
-    required: true,
     questionId: "002",
   },
   {
@@ -28,18 +27,15 @@ const questionTypes = [
     group: "选择题",
     icon: <FileImageOutlined />,
     questionId: "003",
-    required: true,
   },
   {
     name: "图片投票",
     group: "选择题",
     icon: <FilePptOutlined />,
-    required: true,
     questionId: "004",
   },
   {
     name: "填空题",
-    required: true,
     group: "填空题",
     icon: <EditOutlined />,
     questionId: "005",
@@ -48,7 +44,6 @@ const questionTypes = [
     name: "多项填空",
     group: "填空题",
     icon: <OrderedListOutlined />,
-    required: true,
     questionId: "006",
   },
 ];

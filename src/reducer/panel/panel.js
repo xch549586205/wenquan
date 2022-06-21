@@ -1,15 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+import mocks from "@/mock";
 const initialState = {
-  globalOptions: {
-    title: "项目标题",
-    subTitle: "感谢您能抽出几分钟时间来参加本次答题，现在我们就马上开始吧！",
-    themeColor: "#e1e1e1",
-    isDisplaySequence: true,
-    onePage: false,
-  },
-  questionList: [],
-
+  globalOptions: mocks.questionList.globalOptions,
+  questionList: mocks.questionList.questionList,
   mouseData: {
     clientX: -1,
     clientY: -1,

@@ -25,8 +25,10 @@ function List(props) {
     )[0];
     return {
       name: questionType.name,
+      title: "请选择一个选项",
       questionId: questionType.questionId,
       options: ["选项1", "选项2", "选项3"],
+      required: true,
     };
   };
   // 拖动停止时换位

@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import mocks from "@/mock";
 import { updateQuestionList, updateGlobalOptions } from "@/reducer/panel/panel";
 import { Affix } from "antd";
-
+ 
 const { groupingQuestionTypes, questionTypes } = mocks.questionType;
 
 function Main() {
