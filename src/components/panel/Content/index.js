@@ -11,15 +11,20 @@ function Content(props) {
   const cleanCurrentIndex = () => {
     setCurrentIndex(-1);
   };
+  console.log(props.list);
   return (
     <Row
       className={classnames({
         [style.content2Right]: true,
-        [className]:className,
+        [className]: className,
       })}
     >
       <Col span={isSettingModal ? 24 : 20}>
-        <List setCurrentIndex={setCurrentIndex} {...props} />
+        <List
+          setCurrentIndex={setCurrentIndex}
+          currentIndex={currentIndex}
+          {...props}
+        />
       </Col>
       <Col span={isSettingModal ? 0 : 4}>
         <Setting

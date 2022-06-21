@@ -2,7 +2,11 @@ import { useState, createRef, useEffect } from "react";
 import style from "./index.less";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import PropTypes from "prop-types";
-
+import InputItem from "../../../InputItem";
+import classNames from "classnames";
+import { Empty, Tooltip } from "antd";
+import dragIcon from "./images/drag.svg";
+import { DeleteOutlined } from "@ant-design/icons";
 function List(props) {
   const [newItemIndex, setNewItemIndex] = useState(-1);
 
@@ -13,6 +17,7 @@ function List(props) {
     questionTypes,
     setCurrentIndex,
     globalOptions,
+    updateGlobalOptions,
   } = props;
   const createItem = (questionId) => {
     const questionType = questionTypes.filter(
@@ -20,10 +25,8 @@ function List(props) {
     )[0];
     return {
       name: questionType.name,
-      questionType: questionType.questionType,
       questionId: questionType.questionId,
       options: ["选项1", "选项2", "选项3"],
-      checked: [],
     };
   };
   // 拖动停止时换位
@@ -46,11 +49,10 @@ function List(props) {
     const { clientX, clientY, type, questionId } = mouseData;
 
     //列表的宽高
-    const { clientWidth, clientHeight, offsetTop } = contentRef.current;
+    const { clientWidth } = contentRef.current;
     const { scrollTop } =
       contentRef.current.parentElement.parentElement.parentElement
         .parentElement;
-    // console.log(contentRef.current.clientHeight);
     // console.log(contentRef.current.clientHeight);
     // 列表对于窗口的左偏移
     const { offsetLeft } = contentRef.current.offsetParent;
@@ -65,38 +67,37 @@ function List(props) {
     const questionNodeList = contentRef.current.childNodes[0].childNodes;
     const range = [...questionNodeList].map((_node, index) => {
       return {
-        pos:
-          _node.offsetTop +
-          offsetTop -
-          scrollTop +
-          _node.clientHeight / 2 -
-          clientY,
+        pos: _node.offsetTop - scrollTop + _node.clientHeight / 2 - clientY,
         index,
       };
     });
-    //通过鼠标位置 筛选鼠标在哪个item的范围内
-    const sortRange = range.sort((a, b) => Math.abs(a.pos) - Math.abs(b.pos));
-    const minRange = sortRange[0];
-    const _newItemIndex =
-      minRange.pos > 0 ? minRange.index : minRange.index + 1;
-
-    // 判断鼠标是否在列表box范围内
+    // 判断鼠标是否在列表box的左右范围内
     const isMouseInBox =
-      clientX > offsetLeft &&
-      clientX < clientWidth + offsetLeft &&
-      clientY > offsetTop &&
-      clientY < clientHeight + offsetTop;
+      clientX > offsetLeft && clientX < clientWidth + offsetLeft;
+    if (range.length) {
+      //通过鼠标位置 筛选鼠标在哪个item的范围内
+      const sortRange = range.sort((a, b) => Math.abs(a.pos) - Math.abs(b.pos));
+      const minRange = sortRange[0];
+      const _newItemIndex =
+        minRange.pos > 0 ? minRange.index : minRange.index + 1;
 
-    // 得到新item的index
-    if (clientX > 0 && clientY > 0 && isMouseInBox) {
-      setNewItemIndex(_newItemIndex);
-      if (type === "stop") {
+      // 得到新item的index
+      if (clientX > 0 && clientY > 0 && isMouseInBox) {
+        setNewItemIndex(_newItemIndex);
+        if (type === "stop") {
+          addItem(questionId);
+        }
+      }
+    } else {
+      if (type === "stop" && clientX > 0 && clientY > 0 && isMouseInBox) {
         addItem(questionId);
       }
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mouseData]);
 
+  // 拖动添加题型时，鼠标拖动到某个item的样式变化
   const isDrapIntoStyle = (index) => {
     if (index === 0 && newItemIndex === 0) {
       return style.intoQuestionFirst;
@@ -116,15 +117,74 @@ function List(props) {
     setNewItemIndex(-1);
   };
 
-  const contentRef = createRef(null);
+  const changeTitle = (titleType, value) => {
+    console.log(titleType, value);
+    updateGlobalOptions({
+      ...globalOptions,
+      [titleType]: value,
+    });
+  };
 
+  function Item(props) {
+    const { className, question, index, _provided } = props;
+    const changeItem = (prop, newVal) => {
+      const newList = [...list];
+      newList[index] = {
+        ...newList[index],
+        [prop]: newVal,
+      };
+      updateList(newList);
+    };
+    return (
+      <div
+        className={classNames({
+          [style.item]: true,
+          [className]: className,
+        })}
+      >
+        <div className={style.itemTitle}>
+          <span>*</span>
+          <span>{index}</span>
+          <InputItem
+            value={question.name}
+            change={(value) => changeItem("name", value)}
+          />
+          <div className={style.itemTitleIcons}>
+            <Tooltip title="长按拖动题目">
+              <div className={style.dragIcon} {..._provided.dragHandleProps}>
+                <img src={dragIcon} alt="dragIcon" />
+              </div>
+            </Tooltip>
+
+            <div className={style.deleteIcon}>
+              <DeleteOutlined />
+            </div>
+          </div>
+        </div>
+
+        {question.name}
+      </div>
+    );
+  }
+  const contentRef = createRef(null);
   return (
     <div className={style.content}>
-      <div className={style.title}> {globalOptions.title}</div>
-      <div className={style.subTitle}> {globalOptions.subTitle}</div>
+      <div className={style.item}>
+        <InputItem
+          className={style.title}
+          value={globalOptions.title}
+          change={(value) => changeTitle("title", value)}
+        />
+        <InputItem
+          value={globalOptions.subTitle}
+          change={(value) => changeTitle("subTitle", value)}
+        />
+      </div>
+      {Boolean(!list.length) && (
+        <Empty description={"点击题型或把题型拖入此区域"} />
+      )}
       <div ref={contentRef} className={style.list}>
-        <DragDropContext onDragEnd={onDragEnd} key={list.length}>
-          {/* Your target */}
+        <DragDropContext onDragEnd={onDragEnd} key={JSON.stringify(list)}>
           <Droppable droppableId="id">
             {(provided) => {
               return (
@@ -140,17 +200,21 @@ function List(props) {
                         {(_provided) => {
                           return (
                             <div
+                              onClick={() => setCurrentIndex(i)}
                               ref={_provided.innerRef}
                               {..._provided.draggableProps}
-                              onClick={() => setCurrentIndex(i)}
-                              {..._provided.dragHandleProps}
+                              className={
+                                props.currentIndex === i
+                                  ? style.currentIndex
+                                  : ""
+                              }
                             >
-                              <div
-                                key={"question" + i}
+                              <Item
+                                _provided={_provided}
+                                question={question}
                                 className={isDrapIntoStyle(i)}
-                              >
-                                {question.name}
-                              </div>
+                                index={i}
+                              />
                             </div>
                           );
                         }}

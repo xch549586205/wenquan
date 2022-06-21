@@ -6,8 +6,11 @@ import QuestionType from "@/components/Panel/QuestionType";
 import { updateMouseData } from "../../reducer/panel/panel";
 import style from "./index.less";
 import { useSelector, useDispatch } from "react-redux";
-import { groupingQuestionTypes, questionTypes } from "@/mock";
+import mocks from "@/mock";
 import { updateQuestionList, updateGlobalOptions } from "@/reducer/panel/panel";
+import { Affix } from "antd";
+
+const { groupingQuestionTypes, questionTypes } = mocks.questionType;
 
 function Main() {
   const questionList = useSelector((state) => state.question.questionList);
@@ -54,7 +57,9 @@ function Main() {
   };
   return (
     <Panel className={style.main}>
-      <Tabs options={options} className={style.tab} />
+      <Affix offsetTop={1}>
+        <Tabs options={options} className={style.tab} />
+      </Affix>
       <Content
         className={style.content}
         isSettingModal={false}

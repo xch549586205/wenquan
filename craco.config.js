@@ -1,6 +1,8 @@
+var webpack = require("webpack");
+
 const CracoLessPlugin = require("craco-less");
 const path = require("path");
-
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const pathResolve = (pathUrl) => path.join(__dirname, pathUrl);
 
 module.exports = {
@@ -8,7 +10,16 @@ module.exports = {
     alias: {
       "@@": pathResolve("."),
       "@": pathResolve("src"),
+      crypto: false,
+      stream: false,
+      assert: false,
+      http: false,
+      https: false,
     },
+    fallback: {
+      path: require.resolve("path-browserify"),
+    },
+    plugins: [new NodePolyfillPlugin()],
   },
   babel: {
     plugins: [
@@ -40,5 +51,13 @@ module.exports = {
         },
       },
     },
+    {
+      plugin: new NodePolyfillPlugin(),
+    },
   ],
+  resolve: {
+    fallback: {
+      path: require.resolve("path-browserify"),
+    },
+  },
 };

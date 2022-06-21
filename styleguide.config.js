@@ -1,4 +1,5 @@
 var webpack = require("webpack");
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
 const hasJsxRuntime = (() => {
   if (process.env.DISABLE_NEW_JSX_TRANSFORM === "true") {
@@ -106,14 +107,12 @@ module.exports = {
         },
       ],
     },
-    plugins: [
-      new webpack.DefinePlugin({
-        // webpack自带该插件，无需单独安装
-        "process.env": {
-          NODE_ENV: process.env.NODE_ENV, // 将属性转化为全局变量，让代码中可以正常访问
-        },
-      }),
-    ],
+    plugins: [new NodePolyfillPlugin()],
+    resolve: {
+      fallback: {
+        path: require.resolve("path-browserify"),
+      },
+    },
   },
   sections: [
     {
