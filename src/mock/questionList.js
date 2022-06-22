@@ -12,7 +12,8 @@ const questionList = [
     title: "请选择一个选项",
     questionId: "003",
     options: ["选项1", "选项2", "选项3"],
-    require: true,
+    required: true,
+    id: new Date().getTime() + "",
   },
 ];
 export default { globalOptions, questionList };

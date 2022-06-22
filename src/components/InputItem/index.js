@@ -1,32 +1,58 @@
-import { Input } from "antd";
+import { Input, Row, Col, Tooltip } from "antd";
 import style from "./index.less";
 import "./reWriteAnt.css";
 import classNames from "classnames";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { DeleteOutlined } from "@ant-design/icons";
+const { TextArea } = Input;
 function InputItem(props) {
   const { value, className, change } = props;
   const onChange = (e) => {
     set_Val(e.target.value);
   };
   const [_value, set_Val] = useState(value);
-  const inputRef = useRef(null);
+  const inputRef = useRef(value);
+
+  const debounce = (fn, wait) => {
+    let timeout = null;
+    return function (input) {
+      input.persist();
+      if (timeout !== null) clearTimeout(timeout);
+      timeout = setTimeout(fn, wait, input);
+    };
+  };
+
   return (
-    <div
+    <Row
       className={classNames({
         [style.item]: true,
         [className]: className,
       })}
     >
-      <Input
-        ref={inputRef}
-        className={className}
-        value={_value}
-        onChange={onChange}
-        onBlur={() => {
-          change(_value);
-        }}
-      />
-    </div>
+      <Col span={18}>
+        <TextArea
+          ref={inputRef}
+          value={_value}
+          onChange={onChange}
+          autoSize
+          onBlur={() => {
+            setTimeout(() => {
+              if (_value !== value) {
+                change(_value);
+              }
+            }, 100);
+          }}
+        />
+      </Col>
+
+      {
+        <div className={style.deleteIcon}>
+          <Tooltip title="删除" color="red">
+            <DeleteOutlined />
+          </Tooltip>
+        </div>
+      }
+    </Row>
   );
 }
 export default InputItem;

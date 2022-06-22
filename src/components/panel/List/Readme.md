@@ -31,13 +31,13 @@ const globalOptions = {
   onePage: false,
 };
 const [questionList, updateQuestionList] = React.useState(_questionList);
-function setCurrentIndex(params) {
+function setCurrentId(params) {
   alert("更新当前点击的item的索引，提供给设置Setting组件使用");
 }
 <List
   list={questionList}
   updateList={updateQuestionList}
-  setCurrentIndex={setCurrentIndex}
+  setCurrentId={setCurrentId}
   globalOptions={globalOptions}
 />;
 ```

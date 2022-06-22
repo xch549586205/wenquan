@@ -1,17 +1,16 @@
 import { useState } from "react";
 import style from "./index.less";
 import { Row, Col } from "antd";
-import List from "./List";
-import Setting from "./Setting";
+import List from "../List";
+import Setting from "../Setting";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 function Content(props) {
   const { isSettingModal = false, className } = props;
-  const [currentIndex, setCurrentIndex] = useState(-1);
-  const cleanCurrentIndex = () => {
-    setCurrentIndex(-1);
+  const [currentId, setCurrentId] = useState("");
+  const cleanCurrentId = () => {
+    setCurrentId("");
   };
-  console.log(props.list);
   return (
     <Row
       className={classnames({
@@ -20,16 +19,12 @@ function Content(props) {
       })}
     >
       <Col span={isSettingModal ? 24 : 20}>
-        <List
-          setCurrentIndex={setCurrentIndex}
-          currentIndex={currentIndex}
-          {...props}
-        />
+        <List setCurrentId={setCurrentId} currentId={currentId} {...props} />
       </Col>
       <Col span={isSettingModal ? 0 : 4}>
         <Setting
-          currentIndex={currentIndex}
-          cleanCurrentIndex={cleanCurrentIndex}
+          currentId={currentId}
+          cleanCurrentId={cleanCurrentId}
           {...props}
         />
       </Col>

@@ -3,6 +3,8 @@
     "browserslist",
     "craco",
     "draggable",
+    "errcode",
+    "questiontype",
     "reduxjs",
     "Sider",
     "Suppert"

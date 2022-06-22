@@ -37,7 +37,7 @@ const [globalOptions, updateGlobalOptions] = React.useState(_globalOption);
 <Setting
   //可以尝试改成true 发生的变化
   isSettingModal={false}
-  currentIndex={0}
+  currentIndex={""}
   list={questionList}
   updateList={updateQuestionList}
   globalOptions={globalOptions}

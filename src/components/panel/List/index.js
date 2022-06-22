@@ -1,10 +1,10 @@
-import { useState, createRef, useEffect } from "react";
+import { useState, createRef, useEffect, useRef } from "react";
 import style from "./index.less";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import PropTypes from "prop-types";
-import InputItem from "../../../InputItem";
+import InputItem from "../../InputItem";
 import classNames from "classnames";
-import { Empty, Tooltip } from "antd";
+import { Empty, Tooltip, Button } from "antd";
 import dragIcon from "./images/drag.svg";
 import { DeleteOutlined } from "@ant-design/icons";
 function List(props) {
@@ -15,20 +15,20 @@ function List(props) {
     updateList,
     mouseData,
     questionTypes,
-    setCurrentIndex,
     globalOptions,
     updateGlobalOptions,
+    currentId,
+    setCurrentId,
   } = props;
-  const createItem = (questionId) => {
-    const questionType = questionTypes.filter(
-      (q) => q.questionId === questionId
-    )[0];
+  const createItem = (id) => {
+    const questionType = questionTypes.filter((q) => q.id === id)[0];
     return {
       name: questionType.name,
       title: "请选择一个选项",
-      questionId: questionType.questionId,
+      id: questionType.id,
       options: ["选项1", "选项2", "选项3"],
       required: true,
+      id: new Date().getTime() + "",
     };
   };
   // 拖动停止时换位
@@ -48,22 +48,21 @@ function List(props) {
 
   // 监听题型的鼠标拖动
   useEffect(() => {
-    const { clientX, clientY, type, questionId } = mouseData;
+    const { clientX, clientY, type, id } = mouseData;
 
     //列表的宽高
     const { clientWidth } = contentRef.current;
     const { scrollTop } =
       contentRef.current.parentElement.parentElement.parentElement
         .parentElement;
-    // console.log(contentRef.current.clientHeight);
     // 列表对于窗口的左偏移
     const { offsetLeft } = contentRef.current.offsetParent;
     if (type === "stop") {
       setNewItemIndex(-1);
     }
     //纯点击
-    if (questionId && type === "click") {
-      addItem(questionId, list.length + 1);
+    if (id && type === "click") {
+      addItem(id, list.length + 1);
       return;
     }
     const questionNodeList = contentRef.current.childNodes[0].childNodes;
@@ -87,17 +86,32 @@ function List(props) {
       if (clientX > 0 && clientY > 0 && isMouseInBox) {
         setNewItemIndex(_newItemIndex);
         if (type === "stop") {
-          addItem(questionId);
+          addItem(id);
         }
       }
     } else {
       if (type === "stop" && clientX > 0 && clientY > 0 && isMouseInBox) {
-        addItem(questionId);
+        addItem(id);
       }
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mouseData]);
+
+  useEffect(() => {
+    document.onmousedown = function (e) {
+      let clickOther = true;
+      e.path.map((dom) => {
+        if (style.item === dom.className) {
+          clickOther = false;
+        }
+      });
+      if (clickOther) {
+        setTimeout(() => {
+          setCurrentId("");
+        });
+      }
+    };
+  }, []);
 
   // 拖动添加题型时，鼠标拖动到某个item的样式变化
   const isDrapIntoStyle = (index) => {
@@ -111,8 +125,8 @@ function List(props) {
     }
   };
 
-  const addItem = (questionId, _newItemIndex = newItemIndex) => {
-    const newItem = createItem(questionId);
+  const addItem = (id, _newItemIndex = newItemIndex) => {
+    const newItem = createItem(id);
     const _list = [...list];
     const newList = [..._list.splice(0, _newItemIndex), newItem, ..._list];
     updateList(newList);
@@ -120,11 +134,21 @@ function List(props) {
   };
 
   const changeTitle = (titleType, value) => {
-    console.log(titleType, value);
     updateGlobalOptions({
       ...globalOptions,
       [titleType]: value,
     });
+  };
+
+  const changeOptions = (index, optionIndex, value) => {
+    const newList = [...list];
+    const newOptions = [...newList[index].options];
+    newOptions[optionIndex] = value;
+    newList[index] = {
+      ...newList[index],
+      options: newOptions,
+    };
+    updateList(newList);
   };
 
   function Item(props) {
@@ -159,16 +183,34 @@ function List(props) {
             </Tooltip>
 
             <div className={style.deleteIcon}>
-              <DeleteOutlined />
+              <Tooltip title="删除此题" color="red">
+                <DeleteOutlined />
+              </Tooltip>
             </div>
           </div>
         </div>
-
-        {question.name}
+        <div className={style.option}>
+          {question.options.map((option, optionIndex) => {
+            return (
+              <InputItem
+                key={optionIndex + "option"}
+                value={option}
+                change={(value) => changeOptions(index, optionIndex, value)}
+              />
+            );
+          })}
+        </div>
+        {currentId === question.id && (
+          <div className={style.button}>
+            <Button type="primary">添加选项</Button>
+          </div>
+        )}
       </div>
     );
   }
+
   const contentRef = createRef(null);
+
   return (
     <div className={style.content}>
       <div className={style.item}>
@@ -194,22 +236,21 @@ function List(props) {
                   {list.map((question, i) => {
                     return (
                       <Draggable
-                        key={question.questionId + i}
-                        draggableId={question.questionId + i}
+                        key={question.id + i}
+                        draggableId={question.id + i}
                         index={i}
                         dataType={"list" + i}
                       >
                         {(_provided) => {
                           return (
                             <div
-                              onClick={() => setCurrentIndex(i)}
+                              onClick={() => setCurrentId(question.id)}
                               ref={_provided.innerRef}
                               {..._provided.draggableProps}
-                              className={
-                                props.currentIndex === i
-                                  ? style.currentIndex
-                                  : ""
-                              }
+                              className={classNames({
+                                [style.itemBox]: true,
+                                [style.currentId]: currentId === question.id,
+                              })}
                             >
                               <Item
                                 _provided={_provided}
@@ -248,9 +289,13 @@ List.propTypes = {
    */
   updateList: PropTypes.func,
   /**
-   * 更新当前点击的索引，提供给Setting组件使用
+   * 当前点击的题目的id
    */
-  setCurrentIndex: PropTypes.func,
+  currentId: PropTypes.string,
+  /**
+   * 更新当前点击的题目的id，提供给Setting组件使用
+   */
+  setCurrentId: PropTypes.func,
   /**
    * 全局的一些配置，List组件主要是获取 标题title、副标题subtitle
    */

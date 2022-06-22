@@ -8,23 +8,19 @@ import { useState, useEffect } from "react";
 
 function Setting(props) {
   const {
-    currentIndex,
-    cleanCurrentIndex,
+    currentId,
+    cleanCurrentId,
     isSettingModal,
     updateGlobalOptions,
     globalOptions,
     list,
     updateList,
   } = props;
-  const [activeKey, setActiveKey] = useState(
-    currentIndex > -1 ? "set2" : "set1"
-  );
+  const [activeKey, setActiveKey] = useState(currentId ? "set2" : "set1");
 
   useEffect(() => {
-    if (currentIndex > -1) {
-      setActiveKey("set2");
-    }
-  }, [currentIndex]);
+    setActiveKey(currentId ? "set2" : "set1");
+  }, [currentId]);
 
   const options = [
     {
@@ -42,27 +38,23 @@ function Setting(props) {
       title: "题目设置",
       component: (
         <ItemSetting
-          currentIndex={currentIndex}
+          currentId={currentId}
           list={list}
           updateList={updateList}
         />
       ),
-      disabled: currentIndex < 0,
+      disabled: !currentId,
     },
   ];
 
-  // currentIndex;
+  // currentId;
   return isSettingModal ? (
-    <Modal
-      title="更多设置"
-      visible={currentIndex > -1}
-      onCancel={cleanCurrentIndex}
-    >
+    <Modal title="更多设置" visible={currentId} onCancel={cleanCurrentId}>
       <Tab
         options={options}
         isSettingModal={isSettingModal}
         className={style.MoreSettingModal}
-        otherKey={currentIndex}
+        otherKey={currentId}
         activeKey={activeKey}
       />
     </Modal>
@@ -76,7 +68,7 @@ function Setting(props) {
         isSettingModal={isSettingModal}
         activeKey={activeKey}
         className={style.MoreSetting}
-        otherKey={currentIndex}
+        otherKey={currentId}
       />
     </Affix>
   );
@@ -108,11 +100,11 @@ Setting.propTypes = {
   /**
    * 当前被点击选中的题目的索引
    */
-  currentIndex: PropTypes.number,
+  currentId: PropTypes.string,
   /**
    * 清除当前被点击选中的题目的索引，当Content的属性isSettingModal被设为true时，弹窗模式用来关闭弹窗
    */
-  cleanCurrentIndex: PropTypes.func,
+  cleanCurrentId: PropTypes.func,
 };
 Setting.defaultProps = {
   isSettingModal: false,

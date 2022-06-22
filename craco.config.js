@@ -1,5 +1,3 @@
-var webpack = require("webpack");
-
 const CracoLessPlugin = require("craco-less");
 const path = require("path");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");

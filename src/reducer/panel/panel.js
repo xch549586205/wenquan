@@ -1,5 +1,14 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import mocks from "@/mock";
+import api from "@/api";
+
+export const getQuestionTypes = createAsyncThunk(
+  "question/getQuestionTypes",
+  () => {
+    return api.questionTypes.getQuestionTypes();
+  }
+);
+
 const initialState = {
   globalOptions: mocks.questionList.globalOptions,
   questionList: mocks.questionList.questionList,
@@ -7,6 +16,7 @@ const initialState = {
     clientX: -1,
     clientY: -1,
   },
+  questionTypes: [],
 };
 
 export const questionSlice = createSlice({
@@ -26,10 +36,17 @@ export const questionSlice = createSlice({
       state.mouseData = { ...action.payload };
     },
   },
+  extraReducers: {
+    [getQuestionTypes.fulfilled]: (state, action) => {
+      const { payload } = action;
+      if (payload.data.errcode === 200) {
+        state.questionTypes = payload.data.data;
+      }
+    },
+  },
 });
 
 // reducer方法的每一个case都会生成一个Action
 export const { updateQuestionList, updateMouseData, updateGlobalOptions } =
   questionSlice.actions;
-
 export default questionSlice.reducer;

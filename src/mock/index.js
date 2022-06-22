@@ -14,6 +14,5 @@ function createMocks() {
 }
 
 const mocks = createMocks();
-console.log(mocks);
 
 export default mocks;

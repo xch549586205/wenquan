@@ -1,9 +1,12 @@
 .ant-input {
   border: none;
+  resize: none;
+  word-break: break-all;
+  height: 32px;
 }
-.item {
+textarea.ant-input {
+  height: 32px;
 }
-
 .ant-input:focus {
   border: none !important;
 
