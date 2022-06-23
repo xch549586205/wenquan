@@ -141,14 +141,30 @@ function List(props) {
   };
 
   const changeOptions = (index, optionIndex, value) => {
-    const newList = [...list];
-    const newOptions = [...newList[index].options];
-    newOptions[optionIndex] = value;
-    newList[index] = {
-      ...newList[index],
-      options: newOptions,
+    const item = list[index];
+    const newOptions = item.options.split(",");
+    const { editQuestion } = props;
+
+    return {
+      edit: () => {
+        if (optionIndex !== -1) {
+          newOptions[optionIndex] = value;
+        } else {
+          newOptions.push(value);
+        }
+        editQuestion({
+          id: item.id,
+          options: newOptions.join(","),
+        });
+      },
+      delete: () => {
+        newOptions.splice(optionIndex, 1);
+        editQuestion({
+          id: item.id,
+          options: newOptions.join(","),
+        });
+      },
     };
-    updateList(newList);
   };
 
   function Item(props) {
@@ -161,6 +177,7 @@ function List(props) {
       };
       updateList(newList);
     };
+
     return (
       <div
         className={classNames({
@@ -174,6 +191,7 @@ function List(props) {
           <InputItem
             value={question.name}
             change={(value) => changeItem("name", value)}
+            hideDelete
           />
           <div className={style.itemTitleIcons}>
             <Tooltip title="长按拖动题目">
@@ -190,19 +208,34 @@ function List(props) {
           </div>
         </div>
         <div className={style.option}>
-          {question.options.map((option, optionIndex) => {
-            return (
-              <InputItem
-                key={optionIndex + "option"}
-                value={option}
-                change={(value) => changeOptions(index, optionIndex, value)}
-              />
-            );
-          })}
+          {question.options &&
+            question.options.split(",").map((option, optionIndex) => {
+              return (
+                <InputItem
+                  key={optionIndex + "option"}
+                  value={option}
+                  change={(value) =>
+                    changeOptions(index, optionIndex, value).edit()
+                  }
+                  deleteFunc={() => changeOptions(index, optionIndex).delete()}
+                />
+              );
+            })}
         </div>
         {currentId === question.id && (
           <div className={style.button}>
-            <Button type="primary">添加选项</Button>
+            <Button
+              type="primary"
+              onClick={() =>
+                changeOptions(
+                  index,
+                  -1,
+                  `选项${question.options.split(",").length + 1}`
+                ).edit()
+              }
+            >
+              添加选项
+            </Button>
           </div>
         )}
       </div>
@@ -216,11 +249,13 @@ function List(props) {
       <div className={style.item}>
         <InputItem
           className={style.title}
+          hideDelete
           value={globalOptions.title}
           change={(value) => changeTitle("title", value)}
         />
         <InputItem
           value={globalOptions.subTitle}
+          hideDelete
           change={(value) => changeTitle("subTitle", value)}
         />
       </div>
@@ -237,7 +272,7 @@ function List(props) {
                     return (
                       <Draggable
                         key={question.id + i}
-                        draggableId={question.id + i}
+                        draggableId={question.id + ""}
                         index={i}
                         dataType={"list" + i}
                       >

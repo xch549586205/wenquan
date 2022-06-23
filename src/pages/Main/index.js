@@ -6,14 +6,14 @@ import QuestionType from "@/components/Panel/QuestionType";
 import { updateMouseData } from "../../reducer/panel/panel";
 import style from "./index.less";
 import { useSelector, useDispatch } from "react-redux";
-import mocks from "@/mock";
 import { Affix } from "antd";
 import { grouping } from "./util";
-import { getQuestionTypes } from "@/reducer/panel/panel";
+import { getQuestionTypes, getQuestionList } from "@/reducer/panel/panel";
 
 function Main() {
   useEffect(() => {
     dispatch(getQuestionTypes());
+    dispatch(getQuestionList());
   }, []);
   const questionTypes = useSelector((state) => state.question.questionTypes);
   const groupingQuestionTypes = grouping(questionTypes);

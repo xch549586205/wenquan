@@ -8,6 +8,7 @@ import Setting from "@@/src/components/Panel/Setting";
 import mocks from "@/mock";
 import { updateQuestionList, updateGlobalOptions } from "@/reducer/panel/panel";
 import { grouping } from "./util";
+import { editQuestion } from "@/reducer/panel/panel";
 
 function Content(props) {
   const [currentId, setCurrentId] = useState("");
@@ -16,9 +17,8 @@ function Content(props) {
   const mouseData = useSelector((state) => state.question.mouseData);
   const questionTypes = useSelector((state) => state.question.questionTypes);
   const groupingQuestionTypes = grouping(questionTypes);
-  const dispatch = useDispatch();
 
-  const { isSettingModal } = props;
+  const dispatch = useDispatch();
 
   const updateList = (param) => {
     dispatch(updateQuestionList(param));
@@ -26,6 +26,10 @@ function Content(props) {
   const _updateGlobalOptions = (param) => {
     dispatch(updateGlobalOptions(param));
   };
+  const _editQuestion = (params) => {
+    dispatch(editQuestion(params));
+  };
+
   const commonProps = {
     setCurrentId: setCurrentId,
     currentId,
@@ -35,7 +39,10 @@ function Content(props) {
     globalOptions,
     updateGlobalOptions: _updateGlobalOptions,
     questionTypes,
+    editQuestion: _editQuestion,
   };
+
+  const { isSettingModal } = props;
   return (
     <Row
       className={classnames({

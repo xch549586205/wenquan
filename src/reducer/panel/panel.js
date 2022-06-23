@@ -9,9 +9,25 @@ export const getQuestionTypes = createAsyncThunk(
   }
 );
 
+export const getQuestionList = createAsyncThunk(
+  "question/getQuestionList",
+  () => {
+    return api.questionList.getQuestionList();
+  }
+);
+
+export const editQuestion = createAsyncThunk(
+  "question/editQuestion",
+  async (params, { dispatch }) => {
+    const res = await api.questionList.editQuestion(params);
+    dispatch(getQuestionList());
+    return res;
+  }
+);
+
 const initialState = {
   globalOptions: mocks.questionList.globalOptions,
-  questionList: mocks.questionList.questionList,
+  questionList: [],
   mouseData: {
     clientX: -1,
     clientY: -1,
@@ -42,6 +58,15 @@ export const questionSlice = createSlice({
       if (payload.data.errcode === 200) {
         state.questionTypes = payload.data.data;
       }
+    },
+    [getQuestionList.fulfilled]: (state, action) => {
+      const { payload } = action;
+      if (payload.data.errcode === 200) {
+        state.questionList = payload.data.data;
+      }
+    },
+    [editQuestion.fulfilled]: (state, action) => {
+      console.log(action);
     },
   },
 });

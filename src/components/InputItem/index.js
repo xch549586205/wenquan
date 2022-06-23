@@ -6,21 +6,12 @@ import { useRef, useState, useEffect } from "react";
 import { DeleteOutlined } from "@ant-design/icons";
 const { TextArea } = Input;
 function InputItem(props) {
-  const { value, className, change } = props;
+  const { value, className, change, deleteFunc, hideDelete } = props;
   const onChange = (e) => {
     set_Val(e.target.value);
   };
   const [_value, set_Val] = useState(value);
   const inputRef = useRef(value);
-
-  const debounce = (fn, wait) => {
-    let timeout = null;
-    return function (input) {
-      input.persist();
-      if (timeout !== null) clearTimeout(timeout);
-      timeout = setTimeout(fn, wait, input);
-    };
-  };
 
   return (
     <Row
@@ -45,13 +36,13 @@ function InputItem(props) {
         />
       </Col>
 
-      {
-        <div className={style.deleteIcon}>
+      {!hideDelete && (
+        <div className={style.deleteIcon} onClick={deleteFunc}>
           <Tooltip title="删除" color="red">
             <DeleteOutlined />
           </Tooltip>
         </div>
-      }
+      )}
     </Row>
   );
 }
