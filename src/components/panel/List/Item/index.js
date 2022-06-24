@@ -13,6 +13,6 @@ function createItems() {
   return modules;
 }
 
-const Item = createItems();
+const Items = createItems();
 
-export default Item;
+export default Items;

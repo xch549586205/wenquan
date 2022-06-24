@@ -7,6 +7,9 @@ import classNames from "classnames";
 import { Empty, Tooltip, Button } from "antd";
 import dragIcon from "./images/drag.svg";
 import { DeleteOutlined } from "@ant-design/icons";
+import Item from "./Item";
+const { ChoiceQuestion } = Item;
+console.log(Item);
 function List(props) {
   const [newItemIndex, setNewItemIndex] = useState(-1);
 
@@ -167,80 +170,80 @@ function List(props) {
     };
   };
 
-  function Item(props) {
-    const { className, question, index, _provided } = props;
-    const changeItem = (prop, newVal) => {
-      const newList = [...list];
-      newList[index] = {
-        ...newList[index],
-        [prop]: newVal,
-      };
-      updateList(newList);
-    };
+  // function Item(props) {
+  //   const { className, question, index, _provided } = props;
+  //   const changeItem = (prop, newVal) => {
+  //     const newList = [...list];
+  //     newList[index] = {
+  //       ...newList[index],
+  //       [prop]: newVal,
+  //     };
+  //     updateList(newList);
+  //   };
 
-    return (
-      <div
-        className={classNames({
-          [style.item]: true,
-          [className]: className,
-        })}
-      >
-        <div className={style.itemTitle}>
-          <span>*</span>
-          <span>{index}</span>
-          <InputItem
-            value={question.name}
-            change={(value) => changeItem("name", value)}
-            hideDelete
-          />
-          <div className={style.itemTitleIcons}>
-            <Tooltip title="长按拖动题目">
-              <div className={style.dragIcon} {..._provided.dragHandleProps}>
-                <img src={dragIcon} alt="dragIcon" />
-              </div>
-            </Tooltip>
+  //   return (
+  //     <div
+  //       className={classNames({
+  //         [style.item]: true,
+  //         [className]: className,
+  //       })}
+  //     >
+  //       <div className={style.itemTitle}>
+  //         <span>*</span>
+  //         <span>{index}</span>
+  //         <InputItem
+  //           value={question.name}
+  //           change={(value) => changeItem("name", value)}
+  //           hideDelete
+  //         />
+  //         <div className={style.itemTitleIcons}>
+  //           <Tooltip title="长按拖动题目">
+  //             <div className={style.dragIcon} {..._provided.dragHandleProps}>
+  //               <img src={dragIcon} alt="dragIcon" />
+  //             </div>
+  //           </Tooltip>
 
-            <div className={style.deleteIcon}>
-              <Tooltip title="删除此题" color="red">
-                <DeleteOutlined />
-              </Tooltip>
-            </div>
-          </div>
-        </div>
-        <div className={style.option}>
-          {question.options &&
-            question.options.split(",").map((option, optionIndex) => {
-              return (
-                <InputItem
-                  key={optionIndex + "option"}
-                  value={option}
-                  change={(value) =>
-                    changeOptions(index, optionIndex, value).edit()
-                  }
-                  deleteFunc={() => changeOptions(index, optionIndex).delete()}
-                />
-              );
-            })}
-        </div>
-        {currentId === question.id && (
-          <div className={style.button}>
-            <Button
-              type="primary"
-              onClick={() =>
-                changeOptions(
-                  index,
-                  -1,
-                  `选项${question.options.split(",").length + 1}`
-                ).edit()
-              }
-            >
-              添加选项
-            </Button>
-          </div>
-        )}
-      </div>
-    );
-  }
+  //           <div className={style.deleteIcon}>
+  //             <Tooltip title="删除此题" color="red">
+  //               <DeleteOutlined />
+  //             </Tooltip>
+  //           </div>
+  //         </div>
+  //       </div>
+  //       <div className={style.option}>
+  //         {question.options &&
+  //           question.options.split(",").map((option, optionIndex) => {
+  //             return (
+  //               <InputItem
+  //                 key={optionIndex + "option"}
+  //                 value={option}
+  //                 change={(value) =>
+  //                   changeOptions(index, optionIndex, value).edit()
+  //                 }
+  //                 deleteFunc={() => changeOptions(index, optionIndex).delete()}
+  //               />
+  //             );
+  //           })}
+  //       </div>
+  //       {currentId === question.id && (
+  //         <div className={style.button}>
+  //           <Button
+  //             type="primary"
+  //             onClick={() =>
+  //               changeOptions(
+  //                 index,
+  //                 -1,
+  //                 `选项${question.options.split(",").length + 1}`
+  //               ).edit()
+  //             }
+  //           >
+  //             添加选项
+  //           </Button>
+  //         </div>
+  //       )}
+  //     </div>
+  //   );
+  // }
 
   const contentRef = createRef(null);
 
@@ -287,8 +290,10 @@ function List(props) {
                                 [style.currentId]: currentId === question.id,
                               })}
                             >
-                              <Item
+                              <ChoiceQuestion
+                                changeOptions={changeOptions}
                                 _provided={_provided}
+                                currentId={currentId}
                                 question={question}
                                 className={isDrapIntoStyle(i)}
                                 index={i}

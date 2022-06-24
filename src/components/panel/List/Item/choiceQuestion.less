@@ -1,0 +1,56 @@
+
+.item {
+  width: 100%;
+  background: #fff;
+  position: relative;
+  border-radius: 4px;
+  background-color: #fff;
+  border-bottom: 1px solid #e1e1e1;
+  padding: 18px 40px 30px 30px;
+  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 10%);
+  .itemTitle {
+    line-height: 36px;
+    display: flex;
+    font-size: 16px;
+    span:nth-child(1) {
+      color: red;
+      font-size: 17px;
+      margin-right: 2px;
+    }
+    .itemTitleIcons {
+      margin-left: auto;
+      display: flex;
+      .dragIcon,
+      .deleteIcon {
+        width: 20px;
+        height: 100%;
+        display: flex;
+        img,
+        span {
+          width: 15px;
+          margin: auto;
+        }
+      }
+    }
+  }
+}
+
+.currentId {
+  border: 1px solid #2672ff;
+  box-shadow: 0 6px 12px 0 rgb(0 0 0 / 10%);
+}
+.itemBox {
+  margin: 12px 0;
+}
+.intoQuestion {
+  border-bottom: 10px solid #1da57a;
+}
+
+.intoQuestionFirst {
+  border-top: 10px solid #1da57a;
+  border-bottom: 1 solid #e1e1e1;
+}
+
+.title {
+  font-size: 25px !important;
+}
