@@ -11,7 +11,7 @@ import { grouping } from "./util";
 import { editQuestion } from "@/reducer/panel/panel";
 
 function Content(props) {
-  const [currentId, setCurrentId] = useState("");
+  const [currentId, setCurrentId] = useState(null);
   const questionList = useSelector((state) => state.question.questionList);
   const globalOptions = useSelector((state) => state.question.globalOptions);
   const mouseData = useSelector((state) => state.question.mouseData);

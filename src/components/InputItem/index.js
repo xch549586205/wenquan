@@ -38,7 +38,7 @@ function InputItem(props) {
 
       {!hideDelete && (
         <div className={style.deleteIcon} onClick={deleteFunc}>
-          <Tooltip title="删除" color="red">
+          <Tooltip title="删除此项" color="red">
             <DeleteOutlined />
           </Tooltip>
         </div>

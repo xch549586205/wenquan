@@ -4,15 +4,12 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import PropTypes from "prop-types";
 import InputItem from "../../InputItem";
 import classNames from "classnames";
-import { Empty, Tooltip, Button } from "antd";
-import dragIcon from "./images/drag.svg";
-import { DeleteOutlined } from "@ant-design/icons";
+import { Empty } from "antd";
 import Item from "./Item";
-const { ChoiceQuestion } = Item;
-console.log(Item);
+
 function List(props) {
   const [newItemIndex, setNewItemIndex] = useState(-1);
-
+  
   const {
     list,
     updateList,
@@ -23,6 +20,7 @@ function List(props) {
     currentId,
     setCurrentId,
   } = props;
+
   const createItem = (id) => {
     const questionType = questionTypes.filter((q) => q.id === id)[0];
     return {
@@ -34,6 +32,7 @@ function List(props) {
       id: new Date().getTime() + "",
     };
   };
+
   // 拖动停止时换位
   const onDragEnd = (result) => {
     if (!result.destination) {
@@ -104,13 +103,13 @@ function List(props) {
     document.onmousedown = function (e) {
       let clickOther = true;
       e.path.map((dom) => {
-        if (style.item === dom.className) {
+        if (dom.className && dom.className.indexOf(style.itemLi) !== -1) {
           clickOther = false;
         }
       });
       if (clickOther) {
         setTimeout(() => {
-          setCurrentId("");
+          setCurrentId(null);
         });
       }
     };
@@ -124,7 +123,7 @@ function List(props) {
     if (index + 1 === newItemIndex) {
       return style.intoQuestion;
     } else {
-      return style.question;
+      return style.itemLi;
     }
   };
 
@@ -143,107 +142,50 @@ function List(props) {
     });
   };
 
-  const changeOptions = (index, optionIndex, value) => {
+  const changeOption = (index, optionIndex, value) => {
     const item = list[index];
-    const newOptions = item.options.split(",");
+    const options = JSON.parse(item.options);
+    const { option } = options;
+    const newOption = [...option];
     const { editQuestion } = props;
 
     return {
       edit: () => {
         if (optionIndex !== -1) {
-          newOptions[optionIndex] = value;
+          newOption[optionIndex] = value;
         } else {
-          newOptions.push(value);
+          newOption.push(value);
         }
         editQuestion({
           id: item.id,
-          options: newOptions.join(","),
+          options: JSON.stringify({
+            ...options,
+            option: newOption,
+          }),
         });
       },
       delete: () => {
-        newOptions.splice(optionIndex, 1);
+        newOption.splice(optionIndex, 1);
         editQuestion({
           id: item.id,
-          options: newOptions.join(","),
+          options: JSON.stringify({
+            ...options,
+            option: newOption,
+          }),
         });
       },
     };
   };
 
-  // function Item(props) {
-  //   const { className, question, index, _provided } = props;
-  //   const changeItem = (prop, newVal) => {
-  //     const newList = [...list];
-  //     newList[index] = {
-  //       ...newList[index],
-  //       [prop]: newVal,
-  //     };
-  //     updateList(newList);
-  //   };
-
-  //   return (
-  //     <div
-  //       className={classNames({
-  //         [style.item]: true,
-  //         [className]: className,
-  //       })}
-  //     >
-  //       <div className={style.itemTitle}>
-  //         <span>*</span>
-  //         <span>{index}</span>
-  //         <InputItem
-  //           value={question.name}
-  //           change={(value) => changeItem("name", value)}
-  //           hideDelete
-  //         />
-  //         <div className={style.itemTitleIcons}>
-  //           <Tooltip title="长按拖动题目">
-  //             <div className={style.dragIcon} {..._provided.dragHandleProps}>
-  //               <img src={dragIcon} alt="dragIcon" />
-  //             </div>
-  //           </Tooltip>
-
-  //           <div className={style.deleteIcon}>
-  //             <Tooltip title="删除此题" color="red">
-  //               <DeleteOutlined />
-  //             </Tooltip>
-  //           </div>
-  //         </div>
-  //       </div>
-  //       <div className={style.option}>
-  //         {question.options &&
-  //           question.options.split(",").map((option, optionIndex) => {
-  //             return (
-  //               <InputItem
-  //                 key={optionIndex + "option"}
-  //                 value={option}
-  //                 change={(value) =>
-  //                   changeOptions(index, optionIndex, value).edit()
-  //                 }
-  //                 deleteFunc={() => changeOptions(index, optionIndex).delete()}
-  //               />
-  //             );
-  //           })}
-  //       </div>
-  //       {currentId === question.id && (
-  //         <div className={style.button}>
-  //           <Button
-  //             type="primary"
-  //             onClick={() =>
-  //               changeOptions(
-  //                 index,
-  //                 -1,
-  //                 `选项${question.options.split(",").length + 1}`
-  //               ).edit()
-  //             }
-  //           >
-  //             添加选项
-  //           </Button>
-  //         </div>
-  //       )}
-  //     </div>
-  //   );
-  // }
+  const changeItemTitle = (index, value) => {
+    const { editQuestion } = props;
+    const item = list[index];
+    editQuestion({
+      id: item.id,
+      title: value,
+      options: item.options,
+    });
+  };
 
   const contentRef = createRef(null);
 
@@ -277,27 +219,31 @@ function List(props) {
                         key={question.id + i}
                         draggableId={question.id + ""}
                         index={i}
-                        dataType={"list" + i}
                       >
                         {(_provided) => {
+                          const isActive = currentId === question.id;
                           return (
                             <div
-                              onClick={() => setCurrentId(question.id)}
-                              ref={_provided.innerRef}
-                              {..._provided.draggableProps}
                               className={classNames({
-                                [style.itemBox]: true,
-                                [style.currentId]: currentId === question.id,
+                                [style.currentId]: isActive,
+                                [style.itemLi]: true,
+                                [isDrapIntoStyle(i)]: true,
                               })}
+                              onClick={() => {
+                                if (currentId !== question.id) {
+                                  setCurrentId(question.id);
+                                }
+                              }}
                             >
-                              <ChoiceQuestion
-                                changeOptions={changeOptions}
-                                _provided={_provided}
-                                currentId={currentId}
+                              <Item
+                                changeItemTitle={changeItemTitle}
                                 question={question}
-                                className={isDrapIntoStyle(i)}
                                 index={i}
+                                _provided={_provided}
+                                changeOption={changeOption}
+                                currentId={currentId}
                               />
+
                             </div>
                           );
                         }}
@@ -331,7 +277,7 @@ List.propTypes = {
   /**
    * 当前点击的题目的id
    */
-  currentId: PropTypes.string,
+  currentId: PropTypes.number,
   /**
    * 更新当前点击的题目的id，提供给Setting组件使用
    */

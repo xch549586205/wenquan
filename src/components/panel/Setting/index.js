@@ -100,7 +100,7 @@ Setting.propTypes = {
   /**
    * 当前被点击选中的题目的索引
    */
-  currentId: PropTypes.string,
+  currentId: PropTypes.number,
   /**
    * 清除当前被点击选中的题目的索引，当Content的属性isSettingModal被设为true时，弹窗模式用来关闭弹窗
    */
