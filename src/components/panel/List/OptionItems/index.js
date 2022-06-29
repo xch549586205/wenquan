@@ -15,4 +15,5 @@ function createItems() {
 
 const Items = createItems();
 
+//该文件夹下的所有js 集成为一个object Items
 export default Items;

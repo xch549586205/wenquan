@@ -25,6 +25,31 @@ export const editQuestion = createAsyncThunk(
   }
 );
 
+export const addQuestion = createAsyncThunk(
+  "question/addQuestion",
+  async (params, { dispatch }) => {
+    const res = await api.questionList.addQuestion(params);
+    dispatch(getQuestionList());
+    return res;
+  }
+);
+
+export const sortQuestionList = createAsyncThunk(
+  "question/sortQuestionList",
+  async (params, { dispatch }) => {
+    const res = await api.questionList.sortQuestionList(params);
+    dispatch(getQuestionList());
+    return res;
+  }
+);
+export const delQuestion = createAsyncThunk(
+  "question/delQuestion",
+  async (params, { dispatch }) => {
+    const res = await api.questionList.delQuestion(params);
+    dispatch(getQuestionList());
+    return res;
+  }
+);
 const initialState = {
   globalOptions: mocks.questionList.globalOptions,
   questionList: [],
@@ -68,10 +93,19 @@ export const questionSlice = createSlice({
     [editQuestion.fulfilled]: (state, action) => {
       console.log(action);
     },
+    [addQuestion.fulfilled]: (state, action) => {
+      console.log(action);
+    },
+    [sortQuestionList.fulfilled]: (state, action) => {
+      console.log(action);
+    },
   },
 });
 
 // reducer方法的每一个case都会生成一个Action
-export const { updateQuestionList, updateMouseData, updateGlobalOptions } =
-  questionSlice.actions;
+export const {
+  updateQuestionList,
+  updateMouseData,
+  updateGlobalOptions,
+} = questionSlice.actions;
 export default questionSlice.reducer;

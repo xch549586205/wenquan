@@ -3,49 +3,66 @@ import InputItem from "../../../InputItem";
 import dragIcon from "../images/drag.svg";
 import { DeleteOutlined } from "@ant-design/icons";
 import classNames from "classnames";
-import { Tooltip, Button } from "antd";
+import { Tooltip, Button, Row, Col } from "antd";
 import OptionItems from "../OptionItems";
-const { ChoiceQuestion } = OptionItems;
 const type = {
-  0: "ChoiceQuestion",
+  1: "ChoiceQuestion",
+  3: "ChoiceQuestion",
+  2: "MultipleChoice",
 };
+
+function Title(props) {
+  const { changeItemTitle, index, question, _provided, delQuestion } = props;
+  return (
+    <Row className={style.itemTitle}>
+      <Col className={style.itemTitleLeft} span={22}>
+        <Row>
+          <Col span={1}>
+            <span>*</span>
+            <span>{index + 1}</span>
+          </Col>
+          <Col span={23}>
+            <InputItem
+              className={style.titleInput}
+              value={question.title}
+              hideDelete
+              change={(value) => changeItemTitle(index, value)}
+            />
+          </Col>
+        </Row>
+      </Col>
+
+      <Col className={style.itemTitleRight} span={2}>
+        <Tooltip title="长按拖动题目">
+          <div className={style.dragIcon} {..._provided.dragHandleProps}>
+            <img src={dragIcon} alt="dragIcon" />
+          </div>
+        </Tooltip>
+
+        <div className={style.deleteIcon}>
+          <Tooltip
+            title="删除此题"
+            onClick={() => delQuestion({ id: question.id + "" })}
+            color="red"
+          >
+            <DeleteOutlined />
+          </Tooltip>
+        </div>
+      </Col>
+    </Row>
+  );
+}
 function Item(props) {
   const {
     question,
     index,
     _provided,
     changeItemTitle,
+    delQuestion,
     currentId,
     changeOption,
   } = props;
   const OptionItem = OptionItems[type[question.questiontypeid]];
-  function Title() {
-    return (
-      <div className={style.itemTitle}>
-        <span>*</span>
-        <span>{index}</span>
-        <InputItem
-          className={style.titleInput}
-          value={question.title}
-          hideDelete
-          change={(value) => changeItemTitle(index, value)}
-        />
-        <div className={style.itemTitleIcons}>
-          <Tooltip title="长按拖动题目">
-            <div className={style.dragIcon} {..._provided.dragHandleProps}>
-              <img src={dragIcon} alt="dragIcon" />
-            </div>
-          </Tooltip>
-
-          <div className={style.deleteIcon}>
-            <Tooltip title="删除此题" color="red">
-              <DeleteOutlined />
-            </Tooltip>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   function AddItemOption() {
     return (
@@ -82,7 +99,13 @@ function Item(props) {
         [style.item]: true,
       })}
     >
-      <Title />
+      <Title
+        index={index}
+        question={question}
+        _provided={_provided}
+        changeItemTitle={changeItemTitle}
+        delQuestion={delQuestion}
+      />
       <OptionItem
         del={deleteItemOption}
         option={options.option}

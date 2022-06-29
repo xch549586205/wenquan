@@ -6,32 +6,20 @@ import InputItem from "../../InputItem";
 import classNames from "classnames";
 import { Empty } from "antd";
 import Item from "./Item";
+import QRCode from "qrcode.react";
 
 function List(props) {
   const [newItemIndex, setNewItemIndex] = useState(-1);
-  
+
   const {
     list,
-    updateList,
+    reorderList,
     mouseData,
-    questionTypes,
     globalOptions,
     updateGlobalOptions,
     currentId,
     setCurrentId,
   } = props;
-
-  const createItem = (id) => {
-    const questionType = questionTypes.filter((q) => q.id === id)[0];
-    return {
-      name: questionType.name,
-      title: "请选择一个选项",
-      id: questionType.id,
-      options: ["选项1", "选项2", "选项3"],
-      required: true,
-      id: new Date().getTime() + "",
-    };
-  };
 
   // 拖动停止时换位
   const onDragEnd = (result) => {
@@ -40,12 +28,21 @@ function List(props) {
     }
     const reorder = (list, startIndex, endIndex) => {
       const result = Array.from(list); // 此处需要深拷贝
-      result[startIndex] = list[endIndex];
-      result[endIndex] = list[startIndex];
-      return result;
+      var result1 = result.filter((r, i) => i !== startIndex);
+      var result2 = result.filter((r, i) => i === startIndex);
+      var newResult = [
+        ...result1.slice(0, endIndex),
+        ...result2,
+        ...result1.slice(endIndex, result1.length),
+      ];
+      return newResult;
     };
-    const items = reorder(list, result.source.index, result.destination.index);
-    updateList(items);
+    const reorderRes = reorder(
+      list,
+      result.source.index,
+      result.destination.index
+    );
+    reorderList(reorderRes);
   };
 
   // 监听题型的鼠标拖动
@@ -64,7 +61,13 @@ function List(props) {
     }
     //纯点击
     if (id && type === "click") {
-      addItem(id, list.length + 1);
+      try {
+        const maxItemno = list[list.length - 1].itemno;
+        _addItem(id, maxItemno + 1);
+      } catch (error) {
+        _addItem(id, 1);
+      }
+
       return;
     }
     const questionNodeList = contentRef.current.childNodes[0].childNodes;
@@ -88,12 +91,12 @@ function List(props) {
       if (clientX > 0 && clientY > 0 && isMouseInBox) {
         setNewItemIndex(_newItemIndex);
         if (type === "stop") {
-          addItem(id);
+          _addItem(id);
         }
       }
     } else {
       if (type === "stop" && clientX > 0 && clientY > 0 && isMouseInBox) {
-        addItem(id);
+        _addItem(id);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -127,12 +130,8 @@ function List(props) {
     }
   };
 
-  const addItem = (id, _newItemIndex = newItemIndex) => {
-    const newItem = createItem(id);
-    const _list = [...list];
-    const newList = [..._list.splice(0, _newItemIndex), newItem, ..._list];
-    updateList(newList);
-    setNewItemIndex(-1);
+  const _addItem = (questionTypeId, _newItemIndex = newItemIndex) => {
+    props.addItem({ questionTypeId, newItemIndex: _newItemIndex });
   };
 
   const changeTitle = (titleType, value) => {
@@ -147,7 +146,7 @@ function List(props) {
     const options = JSON.parse(item.options);
     const { option } = options;
     const newOption = [...option];
-    const { editQuestion } = props;
+    const { editItem } = props;
 
     return {
       edit: () => {
@@ -156,7 +155,7 @@ function List(props) {
         } else {
           newOption.push(value);
         }
-        editQuestion({
+        editItem({
           id: item.id,
           options: JSON.stringify({
             ...options,
@@ -166,7 +165,7 @@ function List(props) {
       },
       delete: () => {
         newOption.splice(optionIndex, 1);
-        editQuestion({
+        editItem({
           id: item.id,
           options: JSON.stringify({
             ...options,
@@ -178,9 +177,9 @@ function List(props) {
   };
 
   const changeItemTitle = (index, value) => {
-    const { editQuestion } = props;
+    const { editItem } = props;
     const item = list[index];
-    editQuestion({
+    editItem({
       id: item.id,
       title: value,
       options: item.options,
@@ -208,7 +207,7 @@ function List(props) {
         <Empty description={"点击题型或把题型拖入此区域"} />
       )}
       <div ref={contentRef} className={style.list}>
-        <DragDropContext onDragEnd={onDragEnd} key={JSON.stringify(list)}>
+        <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="id">
             {(provided) => {
               return (
@@ -216,7 +215,7 @@ function List(props) {
                   {list.map((question, i) => {
                     return (
                       <Draggable
-                        key={question.id + i}
+                        key={question.id + "Draggable"}
                         draggableId={question.id + ""}
                         index={i}
                       >
@@ -242,8 +241,8 @@ function List(props) {
                                 _provided={_provided}
                                 changeOption={changeOption}
                                 currentId={currentId}
+                                delQuestion={props.delQuestion}
                               />
-
                             </div>
                           );
                         }}
@@ -257,6 +256,13 @@ function List(props) {
           </Droppable>
         </DragDropContext>
       </div>
+      <QRCode
+        value={`http://10.10.30.121:6060/main/${
+          list.length ? list[0].projectid : ""
+        }`}
+        size={256}
+        id="qrCode"
+      />
     </div>
   );
 }

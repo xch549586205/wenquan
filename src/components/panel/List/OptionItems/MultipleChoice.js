@@ -1,4 +1,4 @@
-import style from "./choiceQuestion.less";
+import style from "./MultipleChoice.less";
 import InputItem from "../../../InputItem";
 
 function ChoiceQuestion(props) {
@@ -11,8 +11,8 @@ function ChoiceQuestion(props) {
             <InputItem
               key={optionIndex + "option"}
               value={option}
-              isRadio
               change={(value) => change(optionIndex, value)}
+              isCheckbox
               deleteFunc={() => del(optionIndex)}
             />
           );

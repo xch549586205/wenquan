@@ -9,6 +9,7 @@ const getQuestionList = (params) => {
     },
   });
 };
+
 const addQuestion = (params) => {
   return axios({
     method: "post",
@@ -18,6 +19,7 @@ const addQuestion = (params) => {
     },
   });
 };
+
 const editQuestion = (params) => {
   return axios({
     method: "post",
@@ -27,4 +29,31 @@ const editQuestion = (params) => {
     },
   });
 };
-export { getQuestionList, addQuestion, editQuestion };
+
+const sortQuestionList = (params) => {
+  return axios({
+    method: "post",
+    url: "/question/sort",
+    data: {
+      ...params,
+    },
+  });
+};
+
+const delQuestion = (params) => {
+  return axios({
+    method: "post",
+    url: "/question/del",
+    data: {
+      ...params,
+    },
+  });
+};
+
+export {
+  getQuestionList,
+  addQuestion,
+  editQuestion,
+  sortQuestionList,
+  delQuestion,
+};

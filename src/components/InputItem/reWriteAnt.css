@@ -12,3 +12,26 @@ textarea.ant-input {
 
   background-color: yellow;
 }
+.ant-radio-wrapper {
+  width: 100%;
+  line-height: 32px;
+}
+.ant-radio-disabled .ant-radio-inner {
+  background-color: #fff;
+}
+
+.ant-checkbox + span {
+  display: inline-block;
+  width: 100%;
+}
+.ant-checkbox-wrapper {
+  width: 100%;
+  line-height: 32px;
+}
+.ant-checkbox-disabled .ant-checkbox-inner {
+  background-color: #fff;
+}
+.ant-radio + * {
+  width: 100%;
+  display: inline-block;
+}

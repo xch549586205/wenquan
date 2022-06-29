@@ -5,10 +5,17 @@ import style from "./index.less";
 import List from "@@/src/components/Panel/List";
 import { useSelector, useDispatch } from "react-redux";
 import Setting from "@@/src/components/Panel/Setting";
-import mocks from "@/mock";
-import { updateQuestionList, updateGlobalOptions } from "@/reducer/panel/panel";
-import { grouping } from "./util";
-import { editQuestion } from "@/reducer/panel/panel";
+import {
+  updateQuestionList,
+  updateGlobalOptions,
+} from "@@/src/reducer/panel/panel";
+import {
+  editQuestion,
+  addQuestion,
+  sortQuestionList,
+  delQuestion,
+} from "@@/src/reducer/panel/panel";
+import { defaultData_questionType } from "./util";
 
 function Content(props) {
   const [currentId, setCurrentId] = useState(null);
@@ -16,30 +23,60 @@ function Content(props) {
   const globalOptions = useSelector((state) => state.question.globalOptions);
   const mouseData = useSelector((state) => state.question.mouseData);
   const questionTypes = useSelector((state) => state.question.questionTypes);
-  const groupingQuestionTypes = grouping(questionTypes);
-
   const dispatch = useDispatch();
 
-  const updateList = (param) => {
-    dispatch(updateQuestionList(param));
+  const _addQuestion = (params) => {
+    const { questionTypeId, newItemIndex } = params;
+    const questionTypeName = questionTypes.filter(
+      (q) => q.id === questionTypeId
+    )[0].name;
+    const defaultData = defaultData_questionType[questionTypeName];
+    dispatch(
+      addQuestion({
+        title: defaultData.title,
+        questiontypeid: questionTypeId,
+        projectid: 1,
+        options: JSON.stringify(defaultData.options),
+        itemno: newItemIndex,
+      })
+    );
   };
-  const _updateGlobalOptions = (param) => {
-    dispatch(updateGlobalOptions(param));
+
+  const reorderList = (list) => {
+    dispatch(
+      sortQuestionList(
+        [...list].map((question, i) => ({
+          id: question.id,
+          itemno: i,
+        }))
+      )
+    );
   };
-  const _editQuestion = (params) => {
-    dispatch(editQuestion(params));
+
+  const _delQuestion = async (param) => {
+    await dispatch(delQuestion(param));
+    setCurrentId(null);
   };
 
   const commonProps = {
     setCurrentId: setCurrentId,
     currentId,
-    list: questionList,
+    list: [...questionList].sort((a, b) => {
+      return a.itemno - b.itemno;
+    }),
     mouseData,
-    updateList,
+    updateList: (param) => {
+      dispatch(updateQuestionList(param));
+    },
     globalOptions,
-    updateGlobalOptions: _updateGlobalOptions,
+    updateGlobalOptions: (param) => {
+      dispatch(updateGlobalOptions(param));
+    },
     questionTypes,
-    editQuestion: _editQuestion,
+    editItem: (params) => {
+      dispatch(editQuestion(params));
+    },
+    addItem: _addQuestion,
   };
 
   const { isSettingModal } = props;
@@ -51,7 +88,11 @@ function Content(props) {
       })}
     >
       <Col span={isSettingModal ? 24 : 20}>
-        <List {...commonProps} />
+        <List
+          {...commonProps}
+          reorderList={reorderList}
+          delQuestion={_delQuestion}
+        />
       </Col>
       <Col span={isSettingModal ? 0 : 4}>
         <Setting

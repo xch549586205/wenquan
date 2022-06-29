@@ -1,12 +1,3 @@
-.content {
-  padding: 0 20px;
-}
-.list {
-  background: #f3f5f6;
-  flex-grow: 1;
-  padding-bottom: 100px;
-}
-
 .item {
   width: 100%;
   background: #fff;
@@ -18,18 +9,14 @@
   box-shadow: 0 2px 4px 0 rgb(0 0 0 / 10%);
   .itemTitle {
     line-height: 36px;
-    margin-bottom: 30px;
     display: flex;
     font-size: 16px;
-
-    .itemTitleLeft {
-      span:nth-child(1) {
-        color: red;
-        font-size: 17px;
-        margin-right: 2px;
-      }
+    span:nth-child(1) {
+      color: red;
+      font-size: 17px;
+      margin-right: 2px;
     }
-    .itemTitleRight {
+    .itemTitleIcons {
       margin-left: auto;
       display: flex;
       .dragIcon,
@@ -51,7 +38,9 @@
   border: 1px solid #2672ff;
   box-shadow: 0 6px 12px 0 rgb(0 0 0 / 10%);
 }
-
+.itemBox {
+  margin: 12px 0;
+}
 .intoQuestion {
   border-bottom: 10px solid #1da57a;
 }
@@ -63,7 +52,4 @@
 
 .title {
   font-size: 25px !important;
-}
-.titleInput {
-  margin: 0 !important;
 }

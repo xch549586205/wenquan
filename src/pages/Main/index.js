@@ -8,8 +8,7 @@ import style from "./index.less";
 import { useSelector, useDispatch } from "react-redux";
 import { Affix } from "antd";
 import { grouping } from "./util";
-import { getQuestionTypes, getQuestionList } from "@/reducer/panel/panel";
-
+import { getQuestionTypes, getQuestionList } from "@@/src/reducer/panel/panel";
 function Main() {
   useEffect(() => {
     dispatch(getQuestionTypes());
