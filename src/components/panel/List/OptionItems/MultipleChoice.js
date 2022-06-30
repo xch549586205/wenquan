@@ -1,6 +1,9 @@
-import style from "./MultipleChoice.less";
+import style from "./style/MultipleChoice.less";
 import InputItem from "../../../InputItem";
 
+const Icon = () => (
+  <input type="checkbox" class="ant-checkbox-input" value="" disabled></input>
+);
 function ChoiceQuestion(props) {
   const { change, del, option } = props;
   return (
@@ -9,10 +12,10 @@ function ChoiceQuestion(props) {
         option.map((option, optionIndex) => {
           return (
             <InputItem
+              Icon={<Icon />}
               key={optionIndex + "option"}
               value={option}
               change={(value) => change(optionIndex, value)}
-              isCheckbox
               deleteFunc={() => del(optionIndex)}
             />
           );

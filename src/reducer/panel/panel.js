@@ -37,7 +37,9 @@ export const addQuestion = createAsyncThunk(
 export const sortQuestionList = createAsyncThunk(
   "question/sortQuestionList",
   async (params, { dispatch }) => {
+    console.log("sortstatt");
     const res = await api.questionList.sortQuestionList(params);
+    console.log("sort");
     dispatch(getQuestionList());
     return res;
   }
@@ -103,9 +105,6 @@ export const questionSlice = createSlice({
 });
 
 // reducer方法的每一个case都会生成一个Action
-export const {
-  updateQuestionList,
-  updateMouseData,
-  updateGlobalOptions,
-} = questionSlice.actions;
+export const { updateQuestionList, updateMouseData, updateGlobalOptions } =
+  questionSlice.actions;
 export default questionSlice.reducer;

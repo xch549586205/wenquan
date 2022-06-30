@@ -2,10 +2,12 @@
   border: none;
   resize: none;
   word-break: break-all;
-  height: 32px;
+  height: 36px;
+  line-height: 36px;
 }
 textarea.ant-input {
-  height: 32px;
+  line-height: 36px;
+  height: 36px;
 }
 .ant-input:focus {
   border: none !important;
@@ -14,7 +16,7 @@ textarea.ant-input {
 }
 .ant-radio-wrapper {
   width: 100%;
-  line-height: 32px;
+  line-height: 36px;
 }
 .ant-radio-disabled .ant-radio-inner {
   background-color: #fff;
@@ -26,7 +28,7 @@ textarea.ant-input {
 }
 .ant-checkbox-wrapper {
   width: 100%;
-  line-height: 32px;
+  line-height: 36px;
 }
 .ant-checkbox-disabled .ant-checkbox-inner {
   background-color: #fff;

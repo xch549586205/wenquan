@@ -5,22 +5,24 @@ import React from "react";
 
 let _questionList = [
   {
-    questionId: "001",
-    name: "question1",
-    options: ["选项1", "选项2", "选项3"],
-    checked: [],
+    id: 24,
+    questiontypeid: 3,
+    projectid: 1,
+    itemno: 2,
+    name: "",
+    title: "请选择一个选项3242432",
+    require: "true",
+    options: '{"option":["选项1","选项231231","选项312313"]}',
   },
   {
-    questionId: "002",
-    name: "question2",
-    options: ["选项4", "选项5", "选项5"],
-    checked: [],
-  },
-  {
-    questionId: "004",
-    name: "question1",
-    options: ["选项4", "选项5", "选项5"],
-    checked: [],
+    id: 27,
+    questiontypeid: 2,
+    projectid: 1,
+    itemno: 2,
+    name: "",
+    title: "请选择以下选项 (多选)",
+    require: "true",
+    options: '{"option":["选项1","选项6","选项7"]}',
   },
 ];
 const globalOptions = {
@@ -32,12 +34,17 @@ const globalOptions = {
 };
 const [questionList, updateQuestionList] = React.useState(_questionList);
 function setCurrentId(params) {
-  alert("更新当前点击的item的索引，提供给设置Setting组件使用");
+  // alert("更新当前点击的item的索引，提供给设置Setting组件使用");
 }
+const updateGlobalOptions = () => {};
 <List
   list={questionList}
+  mouseData={{}}
   updateList={updateQuestionList}
   setCurrentId={setCurrentId}
   globalOptions={globalOptions}
+  updateGlobalOptions={() => {}}
+  reorderList={() => {}}
+  editItem={() => {}}
 />;
 ```

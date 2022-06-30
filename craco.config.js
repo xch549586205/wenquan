@@ -4,15 +4,6 @@ const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const pathResolve = (pathUrl) => path.join(__dirname, pathUrl);
 
 module.exports = {
-  // devServer: {
-  //   proxy: {
-  //     "/questionType": {
-  //       target: "http://10.10.30.70:8686",
-  //       changeOrigin: true,
-  //     },
-  //   },
-  // },
-
   webpack: {
     alias: {
       "@@": pathResolve("."),

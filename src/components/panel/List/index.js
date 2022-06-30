@@ -19,7 +19,9 @@ function List(props) {
     updateGlobalOptions,
     currentId,
     setCurrentId,
+    editItem,
   } = props;
+  const [renderList, setRenderList] = useState(list || []);
 
   // 拖动停止时换位
   const onDragEnd = (result) => {
@@ -42,65 +44,80 @@ function List(props) {
       result.source.index,
       result.destination.index
     );
+    setRenderList(reorderRes);
+    // 重新排序
     reorderList(reorderRes);
   };
 
   // 监听题型的鼠标拖动
   useEffect(() => {
-    const { clientX, clientY, type, id } = mouseData;
+    try {
+      const { clientX, clientY, type, id } = mouseData;
 
-    //列表的宽高
-    const { clientWidth } = contentRef.current;
-    const { scrollTop } =
-      contentRef.current.parentElement.parentElement.parentElement
-        .parentElement;
-    // 列表对于窗口的左偏移
-    const { offsetLeft } = contentRef.current.offsetParent;
-    if (type === "stop") {
-      setNewItemIndex(-1);
-    }
-    //纯点击
-    if (id && type === "click") {
-      try {
-        const maxItemno = list[list.length - 1].itemno;
-        _addItem(id, maxItemno + 1);
-      } catch (error) {
-        _addItem(id, 1);
+      //列表的宽高
+      const { clientWidth } = contentRef.current;
+      const { scrollTop } =
+        contentRef.current.parentElement.parentElement.parentElement
+          .parentElement;
+      // 列表对于窗口的左偏移
+      const { offsetLeft } = contentRef.current.offsetParent;
+      if (type === "stop") {
+        setNewItemIndex(-1);
       }
 
-      return;
-    }
-    const questionNodeList = contentRef.current.childNodes[0].childNodes;
-    const range = [...questionNodeList].map((_node, index) => {
-      return {
-        pos: _node.offsetTop - scrollTop + _node.clientHeight / 2 - clientY,
-        index,
-      };
-    });
-    // 判断鼠标是否在列表box的左右范围内
-    const isMouseInBox =
-      clientX > offsetLeft && clientX < clientWidth + offsetLeft;
-    if (range.length) {
-      //通过鼠标位置 筛选鼠标在哪个item的范围内
-      const sortRange = range.sort((a, b) => Math.abs(a.pos) - Math.abs(b.pos));
-      const minRange = sortRange[0];
-      const _newItemIndex =
-        minRange.pos > 0 ? minRange.index : minRange.index + 1;
+      //纯点击
+      if (id && type === "click") {
+        try {
+          const maxItemno = list[list.length - 1].itemno;
+          _addItem(id, maxItemno + 1);
+        } catch (error) {
+          _addItem(id, 1);
+        }
+        return;
+      }
 
-      // 得到新item的index
-      if (clientX > 0 && clientY > 0 && isMouseInBox) {
-        setNewItemIndex(_newItemIndex);
-        if (type === "stop") {
+      const questionNodeList = contentRef.current.childNodes[0].childNodes;
+      const range = [...questionNodeList].map((_node, index) => {
+        return {
+          pos: _node.offsetTop - scrollTop + _node.clientHeight / 2 - clientY,
+          index,
+        };
+      });
+
+      // 判断鼠标是否在列表box的左右范围内
+      const isMouseInBox =
+        clientX > offsetLeft && clientX < clientWidth + offsetLeft;
+      if (range.length) {
+        //通过鼠标位置 筛选鼠标在哪个item的范围内
+        const sortRange = range.sort(
+          (a, b) => Math.abs(a.pos) - Math.abs(b.pos)
+        );
+        const minRange = sortRange[0];
+        const _newItemIndex =
+          minRange.pos > 0 ? minRange.index : minRange.index + 1;
+
+        // 得到新item的index
+        if (clientX > 0 && clientY > 0 && isMouseInBox) {
+          setNewItemIndex(_newItemIndex);
+          if (type === "stop") {
+            _addItem(id);
+          }
+        }
+      } else {
+        if (type === "stop" && clientX > 0 && clientY > 0 && isMouseInBox) {
           _addItem(id);
         }
       }
-    } else {
-      if (type === "stop" && clientX > 0 && clientY > 0 && isMouseInBox) {
-        _addItem(id);
-      }
+    } catch (error) {
+      console.error(error);
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mouseData]);
+
+  useEffect(() => {
+    setRenderList(list);
+  }, [list]);
 
   useEffect(() => {
     document.onmousedown = function (e) {
@@ -212,7 +229,7 @@ function List(props) {
             {(provided) => {
               return (
                 <div ref={provided.innerRef} {...provided.droppableProps}>
-                  {list.map((question, i) => {
+                  {renderList.map((question, i) => {
                     return (
                       <Draggable
                         key={question.id + "Draggable"}
@@ -257,7 +274,7 @@ function List(props) {
         </DragDropContext>
       </div>
       <QRCode
-        value={`http://10.10.30.121:6060/main/${
+        value={`http://10.10.30.121:6666/main/${
           list.length ? list[0].projectid : ""
         }`}
         size={256}
@@ -277,9 +294,9 @@ List.propTypes = {
    */
   mouseData: PropTypes.object,
   /**
-   * 更新题目列表数据
+   * 更新题目数据
    */
-  updateList: PropTypes.func,
+  editItem: PropTypes.func,
   /**
    * 当前点击的题目的id
    */
@@ -292,6 +309,14 @@ List.propTypes = {
    * 全局的一些配置，List组件主要是获取 标题title、副标题subtitle
    */
   globalOptions: PropTypes.object,
+  /**
+   * 更新全局配置
+   */
+  updateGlobalOptions: PropTypes.func,
+  /**
+   * 更新当前点击列表的顺序
+   */
+  reorderList: PropTypes.func,
 };
 List.defaultProps = {
   list: [],

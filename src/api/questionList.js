@@ -34,9 +34,7 @@ const sortQuestionList = (params) => {
   return axios({
     method: "post",
     url: "/question/sort",
-    data: {
-      ...params,
-    },
+    data: params,
   });
 };
 

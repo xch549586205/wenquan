@@ -1,4 +1,3 @@
-var webpack = require("webpack");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
 const hasJsxRuntime = (() => {
@@ -75,7 +74,6 @@ module.exports = {
                 },
               ],
             ],
-
             // This is a feature of `babel-loader` for webpack (not Babel itself).
             // It enables caching results in ./node_modules/.cache/babel-loader/
             // directory for faster rebuilds.
@@ -105,6 +103,14 @@ module.exports = {
             "less-loader"
           ),
         },
+        {
+          loader: require.resolve("file-loader"),
+          // Exclude `js` files to keep "css" loader working as it injects
+          // its runtime that would otherwise be processed through "file" loader.
+          // Also exclude `html` and `json` extensions so they get processed
+          // by webpacks internal loaders.
+          exclude: [/\.(js|mjs|jsx|ts|tsx|less|css)$/, /\.html$/, /\.json$/],
+        },
       ],
     },
     plugins: [new NodePolyfillPlugin()],
@@ -118,22 +124,15 @@ module.exports = {
     {
       name: "Panel",
       components: ["src/components/Panel/index.js"],
-      content: "docs/Panel.md",
+      // content: "docs/Panel.md",
       sections: [
         {
           name: "Tab",
-          components: [
-            "src/components/Panel/Tab/index.js",
-            "src/components/Panel/QuestionType/index.js",
-          ],
+          components: ["src/components/Panel/QuestionType/index.js"],
         },
         {
           name: "Content",
-          components: [
-            "src/components/Panel/Content/index.js",
-            "src/components/Panel/Content/List/index.js",
-            "src/components/Panel/Content/Setting/index.js",
-          ],
+          components: ["src/components/Panel/List/index.js"],
         },
       ],
     },

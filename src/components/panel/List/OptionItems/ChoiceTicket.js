@@ -1,8 +1,10 @@
 import style from "./style/choiceQuestion.less";
 import InputItem from "../../../InputItem";
+
 const Icon = () => (
   <input type="radio" class="ant-radio-input" value="" disabled></input>
 );
+
 function ChoiceQuestion(props) {
   const { change, del, option } = props;
   return (
@@ -11,10 +13,9 @@ function ChoiceQuestion(props) {
         option.map((option, optionIndex) => {
           return (
             <InputItem
-              Icon={<Icon />}
               key={optionIndex + "option"}
               value={option}
-              isRadio
+              Icon={<Icon />}
               change={(value) => change(optionIndex, value)}
               deleteFunc={() => del(optionIndex)}
             />

@@ -1,41 +1,27 @@
 组件效果:
 
 ```jsx
-const groupingQuestionTypes = [
+import "antd/dist/antd.css";
+let groupingQuestionTypes = [
   {
-    groupName: "group1",
+    groupName: "选择题",
+    groupid: 1,
     groupTags: [
       {
-        name: "question1",
-        questionId: "001",
+        name: "多选题",
+        id: 2,
+        groupid: 1,
       },
       {
-        name: "question2",
-        questionId: "002",
-      },
-      {
-        name: "question3",
-        questionId: "003",
-      },
-      {
-        name: "question4",
-        questionId: "004",
-      },
-    ],
-  },
-  {
-    groupName: "group2",
-    groupTags: [
-      {
-        name: "question1",
-        questionId: "005",
-      },
-      {
-        name: "question2",
-        questionId: "006",
+        name: "单选题",
+        id: 3,
+        groupid: 1,
       },
     ],
   },
 ];
-<QuestionType groupingQuestionTypes={groupingQuestionTypes} />;
+<QuestionType
+  groupingQuestionTypes={groupingQuestionTypes}
+  setMouseData={() => {}}
+/>;
 ```

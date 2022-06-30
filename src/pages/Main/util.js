@@ -17,17 +17,38 @@ export const grouping = (questionTypes) => {
   return tags;
 };
 
-export const defaultData_questionType = {
-  单选题: {
-    title: "请选择一个选项",
-    options: {
-      option: ["选项1", "选项2", "选项3"],
+export const defaultData_questionType = (type) => {
+  return {
+    单选题: {
+      title: "请选择一个选项",
+      options: {
+        option: ["选项1", "选项2", "选项3"],
+      },
     },
-  },
-  多选题: {
-    title: "请选择以下选项 (多选)",
-    options: {
-      option: ["选项1", "选项2", "选项3"],
+    多选题: {
+      title: "请选择以下选项 (多选)",
+      options: {
+        option: ["选项1", "选项2", "选项3"],
+      },
     },
-  },
+    文字投票: {
+      title: "请给以下选项投票",
+      options: {
+        option: ["选项1", "选项2"],
+        ticketId: new Date().getTime(),
+      },
+    },
+    下拉题: {
+      title: "请选择一个选项",
+      options: {
+        option: ["选项1", "选项2", "选项3"],
+      },
+    },
+    量表题: {
+      title: "请您对此项目进行评价",
+      options: {
+        option: ["1", "2", "3", "4", "5"],
+      },
+    },
+  }[type];
 };

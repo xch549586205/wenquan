@@ -25,12 +25,13 @@ function Content(props) {
   const questionTypes = useSelector((state) => state.question.questionTypes);
   const dispatch = useDispatch();
 
+  //新增
   const _addQuestion = (params) => {
     const { questionTypeId, newItemIndex } = params;
     const questionTypeName = questionTypes.filter(
       (q) => q.id === questionTypeId
     )[0].name;
-    const defaultData = defaultData_questionType[questionTypeName];
+    const defaultData = defaultData_questionType(questionTypeName);
     dispatch(
       addQuestion({
         title: defaultData.title,
@@ -42,37 +43,39 @@ function Content(props) {
     );
   };
 
+  // 排序 根据itemno的大小依次排序
   const reorderList = (list) => {
     dispatch(
       sortQuestionList(
         [...list].map((question, i) => ({
           id: question.id,
-          itemno: i,
+          itemno: i + 1,
         }))
       )
     );
   };
 
+  // 删除
   const _delQuestion = async (param) => {
     await dispatch(delQuestion(param));
     setCurrentId(null);
   };
 
   const commonProps = {
-    setCurrentId: setCurrentId,
+    setCurrentId,
     currentId,
+    globalOptions,
+    mouseData,
+    questionTypes,
     list: [...questionList].sort((a, b) => {
       return a.itemno - b.itemno;
     }),
-    mouseData,
     updateList: (param) => {
       dispatch(updateQuestionList(param));
     },
-    globalOptions,
     updateGlobalOptions: (param) => {
       dispatch(updateGlobalOptions(param));
     },
-    questionTypes,
     editItem: (params) => {
       dispatch(editQuestion(params));
     },

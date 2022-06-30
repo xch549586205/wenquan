@@ -16,6 +16,7 @@ function Main() {
   }, []);
   const questionTypes = useSelector((state) => state.question.questionTypes);
   const groupingQuestionTypes = grouping(questionTypes);
+  console.log(groupingQuestionTypes);
   const dispatch = useDispatch();
 
   const setMouseData = (params) => {

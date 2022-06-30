@@ -9,6 +9,9 @@ const type = {
   1: "ChoiceQuestion",
   3: "ChoiceQuestion",
   2: "MultipleChoice",
+  4: "ChoiceTicket",
+  5: "PullDownQuestion",
+  6: "GaugeQuestion",
 };
 
 function Title(props) {
@@ -63,7 +66,7 @@ function Item(props) {
     changeOption,
   } = props;
   const OptionItem = OptionItems[type[question.questiontypeid]];
-
+  const hideAdd = question.questiontypeid === 6;
   function AddItemOption() {
     return (
       <div className={style.button}>
@@ -87,6 +90,7 @@ function Item(props) {
     changeOption(index, optionIndex).delete();
   };
   const changeItemOption = (optionIndex, value) => {
+    console.log(value);
     changeOption(index, optionIndex, value).edit();
   };
   const options = JSON.parse(question.options);
@@ -111,7 +115,7 @@ function Item(props) {
         option={options.option}
         change={changeItemOption}
       />
-      {currentId === question.id && <AddItemOption />}
+      {currentId === question.id && !hideAdd && <AddItemOption />}
     </div>
   );
 }

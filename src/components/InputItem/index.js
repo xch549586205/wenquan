@@ -6,15 +6,7 @@ import { useRef, useState, useEffect } from "react";
 import { DeleteOutlined } from "@ant-design/icons";
 const { TextArea } = Input;
 function InputItem(props) {
-  const {
-    value,
-    className,
-    change,
-    deleteFunc,
-    hideDelete,
-    isRadio,
-    isCheckbox,
-  } = props;
+  const { value, className, change, deleteFunc, hideDelete, Icon } = props;
   const onChange = (e) => {
     set_Val(e.target.value);
   };
@@ -40,18 +32,9 @@ function InputItem(props) {
         [className]: className,
       })}
     >
-      <Col span={18}>
-        {isRadio ? (
-          <Radio disabled>
-            <TextArea {...warpProps} />
-          </Radio>
-        ) : isCheckbox ? (
-          <Checkbox disabled>
-            <TextArea {...warpProps} />
-          </Checkbox>
-        ) : (
-          <TextArea {...warpProps} />
-        )}
+      <Col span={18} className={style.textArea}>
+        <div>{Icon}</div>
+        <TextArea {...warpProps} allowClear />
       </Col>
 
       {!hideDelete && (
