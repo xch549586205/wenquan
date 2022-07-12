@@ -1,8 +1,6 @@
 import style from "./style/choiceQuestion.less";
 import InputItem from "../../../InputItem";
-const Icon = () => (
-  <input type="radio" class="ant-radio-input" value="" disabled></input>
-);
+const Icon = () => <input type="radio" value="" disabled></input>;
 function ChoiceQuestion(props) {
   const { change, del, option } = props;
   return (

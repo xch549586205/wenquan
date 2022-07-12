@@ -13,7 +13,6 @@ export const grouping = (questionTypes) => {
       tags[key].groupTags.push({ name, icon, id, groupid: tags[key].groupid });
     }
   });
-  console.log(tags);
   return tags;
 };
 

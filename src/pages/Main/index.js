@@ -15,8 +15,8 @@ function Main() {
     dispatch(getQuestionList());
   }, []);
   const questionTypes = useSelector((state) => state.question.questionTypes);
+  const layoutHeight = useSelector((state) => state.layout.layoutHeight);
   const groupingQuestionTypes = grouping(questionTypes);
-  console.log(groupingQuestionTypes);
   const dispatch = useDispatch();
 
   const setMouseData = (params) => {
@@ -41,10 +41,12 @@ function Main() {
     { tabKey: 2, title: "题库", component: (() => "N/A")() },
     { tabKey: 3, title: "大纲", component: (() => "N/A")() },
   ];
-
   return (
-    <Panel className={style.main}>
-      <Affix offsetTop={1}>
+    <Panel
+      className={style.main}
+      style={{ height: `calc( 100vh - ${layoutHeight + "px"})` }}
+    >
+      <Affix offsetTop={layoutHeight + 1} key={layoutHeight + "layoutHeight"}>
         <Tabs options={questionTypeOptions} className={style.tab} />
       </Affix>
       <Content isSettingModal={false} />

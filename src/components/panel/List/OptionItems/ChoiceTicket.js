@@ -2,7 +2,7 @@ import style from "./style/choiceQuestion.less";
 import InputItem from "../../../InputItem";
 
 const Icon = () => (
-  <input type="radio" class="ant-radio-input" value="" disabled></input>
+  <input type="radio" value="" disabled></input>
 );
 
 function ChoiceQuestion(props) {

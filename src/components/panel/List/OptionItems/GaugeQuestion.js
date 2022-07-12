@@ -1,9 +1,7 @@
 import style from "./style/GaugeQuestion.less";
 import InputItem from "../../../InputItem";
 import { Radio } from "antd";
-const Icon = () => (
-  <input type="radio" class="ant-radio-input" value="" disabled></input>
-);
+const Icon = () => <input type="radio" value="" disabled></input>;
 function ChoiceQuestion(props) {
   const { change, del, option } = props;
   return (
@@ -11,13 +9,8 @@ function ChoiceQuestion(props) {
       {option.length &&
         option.map((option, optionIndex) => {
           return (
-            <div>
-              <input
-                type="radio"
-                class="ant-radio-input"
-                value=""
-                disabled
-              ></input>
+            <div key={optionIndex + "option"}>
+              <input type="radio" value="" disabled></input>
               <span>{option}</span>
             </div>
             // <InputItem

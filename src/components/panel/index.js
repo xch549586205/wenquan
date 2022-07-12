@@ -17,6 +17,7 @@ function Panel(props) {
         [style.panelCol]: direction === "col",
         [className]: className,
       })}
+      style={props.style}
     >
       {children}
     </div>

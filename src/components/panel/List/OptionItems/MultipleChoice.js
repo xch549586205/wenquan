@@ -1,9 +1,7 @@
 import style from "./style/MultipleChoice.less";
 import InputItem from "../../../InputItem";
 
-const Icon = () => (
-  <input type="checkbox" class="ant-checkbox-input" value="" disabled></input>
-);
+const Icon = () => <input type="checkbox" value="" disabled />;
 function ChoiceQuestion(props) {
   const { change, del, option } = props;
   return (

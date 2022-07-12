@@ -37,9 +37,7 @@ export const addQuestion = createAsyncThunk(
 export const sortQuestionList = createAsyncThunk(
   "question/sortQuestionList",
   async (params, { dispatch }) => {
-    console.log("sortstatt");
     const res = await api.questionList.sortQuestionList(params);
-    console.log("sort");
     dispatch(getQuestionList());
     return res;
   }

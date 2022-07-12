@@ -90,7 +90,6 @@ function Item(props) {
     changeOption(index, optionIndex).delete();
   };
   const changeItemOption = (optionIndex, value) => {
-    console.log(value);
     changeOption(index, optionIndex, value).edit();
   };
   const options = JSON.parse(question.options);

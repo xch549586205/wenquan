@@ -274,7 +274,7 @@ function List(props) {
         </DragDropContext>
       </div>
       <QRCode
-        value={`http://10.10.30.121:6666/main/${
+        value={`http://10.10.30.121:8000/main/${
           list.length ? list[0].projectid : ""
         }`}
         size={256}

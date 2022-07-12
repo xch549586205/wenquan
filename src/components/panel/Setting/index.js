@@ -14,6 +14,7 @@ function Setting(props) {
     updateGlobalOptions,
     globalOptions,
     list,
+    layoutHeight,
     updateList,
   } = props;
   const [activeKey, setActiveKey] = useState(currentId ? "set2" : "set1");
@@ -61,7 +62,7 @@ function Setting(props) {
   ) : (
     <Affix
       style={{ width: "100%", position: "absolute", top: 0 }}
-      offsetTop={1}
+      offsetTop={layoutHeight + 1}
     >
       <Tab
         options={options}

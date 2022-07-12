@@ -1,6 +1,5 @@
 import { Input, Row, Col, Tooltip, Radio, Checkbox } from "antd";
 import style from "./index.less";
-import "./reWriteAnt.css";
 import classNames from "classnames";
 import { useRef, useState, useEffect } from "react";
 import { DeleteOutlined } from "@ant-design/icons";
@@ -34,7 +33,7 @@ function InputItem(props) {
     >
       <Col span={18} className={style.textArea}>
         <div>{Icon}</div>
-        <TextArea {...warpProps} allowClear />
+        <TextArea {...warpProps} />
       </Col>
 
       {!hideDelete && (

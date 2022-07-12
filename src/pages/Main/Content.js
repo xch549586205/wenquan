@@ -22,6 +22,7 @@ function Content(props) {
   const questionList = useSelector((state) => state.question.questionList);
   const globalOptions = useSelector((state) => state.question.globalOptions);
   const mouseData = useSelector((state) => state.question.mouseData);
+  const layoutHeight = useSelector((state) => state.layout.layoutHeight);
   const questionTypes = useSelector((state) => state.question.questionTypes);
   const dispatch = useDispatch();
 
@@ -100,6 +101,7 @@ function Content(props) {
       <Col span={isSettingModal ? 0 : 4}>
         <Setting
           {...commonProps}
+          layoutHeight={layoutHeight}
           cleanCurrentId={() => {
             setCurrentId("");
           }}
