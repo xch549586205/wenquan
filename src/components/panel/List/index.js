@@ -204,7 +204,6 @@ function List(props) {
   };
 
   const contentRef = createRef(null);
-
   return (
     <div className={style.content}>
       <div className={style.item}>

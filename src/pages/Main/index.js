@@ -9,15 +9,25 @@ import { useSelector, useDispatch } from "react-redux";
 import { Affix } from "antd";
 import { grouping } from "./util";
 import { getQuestionTypes, getQuestionList } from "@@/src/reducer/panel/panel";
+import { setProjectId } from "@@/src/reducer/project/project";
+import { useParams } from "react-router-dom";
 function Main() {
+  const dispatch = useDispatch();
+
+  const params = useParams();
+
   useEffect(() => {
     dispatch(getQuestionTypes());
-    dispatch(getQuestionList());
+    dispatch(getQuestionList({ projectid: params.id }));
   }, []);
+
+  useEffect(() => {
+    dispatch(setProjectId(params.id));
+  }, [params.id]);
+
   const questionTypes = useSelector((state) => state.question.questionTypes);
-  const layoutHeight = useSelector((state) => state.layout.layoutHeight);
+  const navbarHeight = useSelector((state) => state.layout.navbarHeight);
   const groupingQuestionTypes = grouping(questionTypes);
-  const dispatch = useDispatch();
 
   const setMouseData = (params) => {
     dispatch(
@@ -44,9 +54,9 @@ function Main() {
   return (
     <Panel
       className={style.main}
-      style={{ height: `calc( 100vh - ${layoutHeight + "px"})` }}
+      style={{ height: `calc( 100vh - ${navbarHeight + "px"})` }}
     >
-      <Affix offsetTop={layoutHeight + 1} key={layoutHeight + "layoutHeight"}>
+      <Affix offsetTop={navbarHeight + 1} key={navbarHeight + "navbarHeight"}>
         <Tabs options={questionTypeOptions} className={style.tab} />
       </Affix>
       <Content isSettingModal={false} />

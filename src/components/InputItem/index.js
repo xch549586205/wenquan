@@ -1,10 +1,11 @@
 import { Input, Row, Col, Tooltip, Radio, Checkbox } from "antd";
 import style from "./index.less";
 import classNames from "classnames";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, forwardRef } from "react";
 import { DeleteOutlined } from "@ant-design/icons";
 const { TextArea } = Input;
-function InputItem(props) {
+
+const InputItem = forwardRef((props, ref) => {
   const { value, className, change, deleteFunc, hideDelete, Icon } = props;
   const onChange = (e) => {
     set_Val(e.target.value);
@@ -12,7 +13,7 @@ function InputItem(props) {
   const [_value, set_Val] = useState(value);
   const inputRef = useRef(value);
   const warpProps = {
-    ref: inputRef,
+    ref,
     value: _value,
     onChange,
     autoSize: true,
@@ -45,5 +46,5 @@ function InputItem(props) {
       )}
     </Row>
   );
-}
+});
 export default InputItem;

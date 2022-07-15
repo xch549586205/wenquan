@@ -1,5 +1,5 @@
 import style from "./style/choiceQuestion.less";
-import InputItem from "../../../InputItem";
+import InputItem from "../../../../InputItem";
 
 const Icon = () => (
   <input type="radio" value="" disabled></input>

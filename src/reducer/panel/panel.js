@@ -11,42 +11,55 @@ export const getQuestionTypes = createAsyncThunk(
 
 export const getQuestionList = createAsyncThunk(
   "question/getQuestionList",
-  () => {
-    return api.questionList.getQuestionList();
+  (params) => {
+    return api.questionList.getQuestionList(params);
   }
 );
 
 export const editQuestion = createAsyncThunk(
   "question/editQuestion",
-  async (params, { dispatch }) => {
-    const res = await api.questionList.editQuestion(params);
-    dispatch(getQuestionList());
+  async (params, { dispatch, getState }) => {
+    const state = getState();
+    const res = await api.questionList.editQuestion({
+      ...params,
+      projectid: state.project.projectId * 1,
+    });
+    dispatch(getQuestionList({ projectid: state.project.projectId }));
     return res;
   }
 );
 
 export const addQuestion = createAsyncThunk(
   "question/addQuestion",
-  async (params, { dispatch }) => {
-    const res = await api.questionList.addQuestion(params);
-    dispatch(getQuestionList());
+  async (params, { getState, dispatch }) => {
+    const state = getState();
+    const res = await api.questionList.addQuestion({
+      ...params,
+      projectid: state.project.projectId * 1,
+    });
+    dispatch(getQuestionList({ projectid: state.project.projectId }));
     return res;
   }
 );
 
 export const sortQuestionList = createAsyncThunk(
   "question/sortQuestionList",
-  async (params, { dispatch }) => {
+  async (params, { dispatch, getState }) => {
+    const state = getState();
     const res = await api.questionList.sortQuestionList(params);
-    dispatch(getQuestionList());
+    dispatch(getQuestionList({ projectid: state.project.projectId }));
     return res;
   }
 );
 export const delQuestion = createAsyncThunk(
   "question/delQuestion",
-  async (params, { dispatch }) => {
-    const res = await api.questionList.delQuestion(params);
-    dispatch(getQuestionList());
+  async (params, { dispatch, getState }) => {
+    const state = getState();
+    const res = await api.questionList.delQuestion({
+      ...params,
+      projectid: state.project.projectId * 1,
+    });
+    dispatch(getQuestionList({ projectid: state.project.projectId }));
     return res;
   }
 );

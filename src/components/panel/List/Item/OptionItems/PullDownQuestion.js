@@ -1,8 +1,5 @@
 import style from "./style/PullDownQuestion.less";
-import InputItem from "../../../InputItem";
-import { UserOutlined } from "@ant-design/icons";
-import { Select } from "antd";
-import selectSvg from "./images/select.svg";
+import InputItem from "../../../../InputItem";
 const Icon = () => (
   <svg
     viewBox="64 64 896 896"

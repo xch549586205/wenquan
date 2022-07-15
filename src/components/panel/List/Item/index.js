@@ -4,15 +4,7 @@ import dragIcon from "../images/drag.svg";
 import { DeleteOutlined } from "@ant-design/icons";
 import classNames from "classnames";
 import { Tooltip, Button, Row, Col } from "antd";
-import OptionItems from "../OptionItems";
-const type = {
-  1: "ChoiceQuestion",
-  3: "ChoiceQuestion",
-  2: "MultipleChoice",
-  4: "ChoiceTicket",
-  5: "PullDownQuestion",
-  6: "GaugeQuestion",
-};
+import OptionItems from "./OptionItems";
 
 function Title(props) {
   const { changeItemTitle, index, question, _provided, delQuestion } = props;
@@ -65,8 +57,10 @@ function Item(props) {
     currentId,
     changeOption,
   } = props;
-  const OptionItem = OptionItems[type[question.questiontypeid]];
-  const hideAdd = question.questiontypeid === 6;
+  const OptionItem = OptionItems[question.componentname];
+  const hideAddQuestionTypeNames = ["横向填空", "填空题", "量表题"];
+  const hideAdd =
+    hideAddQuestionTypeNames.indexOf(question.questiontypename) !== -1;
   function AddItemOption() {
     return (
       <div className={style.button}>

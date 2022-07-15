@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Row, Col } from "antd";
 import classnames from "classnames";
 import style from "./index.less";
@@ -22,7 +22,7 @@ function Content(props) {
   const questionList = useSelector((state) => state.question.questionList);
   const globalOptions = useSelector((state) => state.question.globalOptions);
   const mouseData = useSelector((state) => state.question.mouseData);
-  const layoutHeight = useSelector((state) => state.layout.layoutHeight);
+  const navbarHeight = useSelector((state) => state.layout.navbarHeight);
   const questionTypes = useSelector((state) => state.question.questionTypes);
   const dispatch = useDispatch();
 
@@ -37,14 +37,15 @@ function Content(props) {
       addQuestion({
         title: defaultData.title,
         questiontypeid: questionTypeId,
-        projectid: 1,
-        options: JSON.stringify(defaultData.options),
+        options: defaultData.options
+          ? JSON.stringify(defaultData.options)
+          : null,
         itemno: newItemIndex,
       })
     );
   };
 
-  // 排序 根据itemno的大小依次排序
+  // 进行排序 根据itemno的大小依次排序
   const reorderList = (list) => {
     dispatch(
       sortQuestionList(
@@ -68,9 +69,18 @@ function Content(props) {
     globalOptions,
     mouseData,
     questionTypes,
-    list: [...questionList].sort((a, b) => {
-      return a.itemno - b.itemno;
-    }),
+    list: [...questionList]
+      .sort((a, b) => {
+        return a.itemno - b.itemno;
+      })
+      .map((question) => {
+        return {
+          ...question,
+          componentname: questionTypes.filter(
+            (type) => type.id === question.questiontypeid
+          )[0].componentname,
+        };
+      }),
     updateList: (param) => {
       dispatch(updateQuestionList(param));
     },
@@ -101,7 +111,7 @@ function Content(props) {
       <Col span={isSettingModal ? 0 : 4}>
         <Setting
           {...commonProps}
-          layoutHeight={layoutHeight}
+          navbarHeight={navbarHeight}
           cleanCurrentId={() => {
             setCurrentId("");
           }}

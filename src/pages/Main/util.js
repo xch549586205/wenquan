@@ -49,5 +49,17 @@ export const defaultData_questionType = (type) => {
         option: ["1", "2", "3", "4", "5"],
       },
     },
+    填空题: {
+      title: "请填写本项内容",
+      options: { option: [""] },
+    },
+    多项填空: {
+      title: "请填写以下内容",
+      options: { option: ["填空1", "填空2"] },
+    },
+    横向填空: {
+      title: "请填写以下信息",
+      options: { option: ["姓名________年龄____岁联系方式___________"] },
+    },
   }[type];
 };

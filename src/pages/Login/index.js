@@ -22,7 +22,7 @@ const LoginRegister = () => {
         const userInfo = res.data.data[0];
         Cookies.set("userInfo", JSON.stringify({ ...userInfo }));
       }
-      setTimeout(() => navigate("/main", { replace: true }), 200);
+      setTimeout(() => navigate("/project", { replace: true }), 200);
     } else {
       message.error(res.data.errmsg);
     }
@@ -43,7 +43,7 @@ const LoginRegister = () => {
     }
   };
   return (
-    <div style={{ paddingTop: "200px" }}>
+    <div style={{ padding: "200px 20px" }}>
       {status === "login" && (
         <Login goRegister={() => setStatus("register")} login={login} />
       )}

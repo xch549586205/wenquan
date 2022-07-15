@@ -14,7 +14,7 @@ function Setting(props) {
     updateGlobalOptions,
     globalOptions,
     list,
-    layoutHeight,
+    navbarHeight,
     updateList,
   } = props;
   const [activeKey, setActiveKey] = useState(currentId ? "set2" : "set1");
@@ -62,7 +62,7 @@ function Setting(props) {
   ) : (
     <Affix
       style={{ width: "100%", position: "absolute", top: 0 }}
-      offsetTop={layoutHeight + 1}
+      offsetTop={navbarHeight + 1}
     >
       <Tab
         options={options}
