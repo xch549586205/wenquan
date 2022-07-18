@@ -14,7 +14,7 @@ function ChoiceQuestion(props) {
               value={option}
               isRadio
               change={(value) => change(optionIndex, value)}
-              deleteFunc={() => del(optionIndex)}
+              onDelete={() => del(optionIndex)}
             />
           );
         })}

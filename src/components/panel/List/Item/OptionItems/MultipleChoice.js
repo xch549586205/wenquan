@@ -14,7 +14,7 @@ function ChoiceQuestion(props) {
               key={optionIndex + "option"}
               value={row}
               change={(value) => change(optionIndex, value)}
-              deleteFunc={() => del(optionIndex)}
+              onDelete={() => del(optionIndex)}
             />
           );
         })}

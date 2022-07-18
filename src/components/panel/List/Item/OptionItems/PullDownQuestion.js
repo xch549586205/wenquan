@@ -26,7 +26,7 @@ function PullDownQuestion(props) {
               Icon={<Icon />}
               value={option}
               change={(value) => change(optionIndex, value)}
-              deleteFunc={() => del(optionIndex)}
+              onDelete={() => del(optionIndex)}
             />
           );
         })}

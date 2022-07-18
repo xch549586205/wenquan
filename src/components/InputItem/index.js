@@ -6,7 +6,7 @@ import { DeleteOutlined } from "@ant-design/icons";
 const { TextArea } = Input;
 
 const InputItem = forwardRef((props, ref) => {
-  const { value, className, change, deleteFunc, hideDelete, Icon } = props;
+  const { value, className, change, onDelete, hideDelete, Icon } = props;
   const onChange = (e) => {
     set_Val(e.target.value);
   };
@@ -38,7 +38,7 @@ const InputItem = forwardRef((props, ref) => {
       </Col>
 
       {!hideDelete && (
-        <div className={style.deleteIcon} onClick={deleteFunc}>
+        <div className={style.deleteIcon} onClick={onDelete}>
           <Tooltip title="删除此项" color="red">
             <DeleteOutlined />
           </Tooltip>
